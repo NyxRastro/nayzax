@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>لسان اليمن (الهمداني) — نيزك</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Zain:wght@300;400;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        /* ===== PAGE BASE ===== */
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        body {
+            background-color: #0F0823;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* ===== FULL-SCREEN BG (Same as story.html) ===== */
+        .story-page {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .story-bg {
+            position: absolute;
+            inset: 0;
+            background-image: url('images/nebula_bg.jpg');
+            background-size: cover;
+            background-position: center center;
+            z-index: 0;
+        }
+
+        .story-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg,
+                    rgba(10, 4, 25, 0.93) 0%,
+                    rgba(15, 7, 38, 0.88) 40%,
+                    rgba(8, 3, 20, 0.95) 100%);
+        }
+
+        /* Animated stars overlay */
+        .story-stars {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .s-star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: sTwinkle var(--dur, 3s) ease-in-out infinite;
+        }
+
+        @keyframes sTwinkle {
+
+            0%,
+            100% {
+                opacity: var(--op, 0.6);
+            }
+
+            50% {
+                opacity: 0.1;
+            }
+        }
+
+        /* Subtle center glow */
+        .story-nebula-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 300px;
+            background: radial-gradient(ellipse, rgba(192, 132, 252, 0.05) 0%, transparent 65%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ===== CONTENT WRAPPER ===== */
+        .detail-content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 70px;
+            /* offset for nav */
+        }
+
+        .detail-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+            padding: 0 40px;
+        }
+
+        /* Card side (left visually in design) */
+        .detail-container {
+            flex-direction: row-reverse;
+            gap: 40px;
+            /* Reduced from 60 */
+        }
+
+        .detail-card-wrapper {
+            flex-shrink: 0;
+        }
+
+        /* The square card with folded corner */
+        .story-card {
+            position: relative;
+            background: linear-gradient(145deg, #A855F7 0%, #7B4DFF 100%);
+            border-radius: 28px;
+            /* Slightly less rounded */
+            width: 330px;
+            /* Reduced from 420 */
+            height: 330px;
+            /* Reduced from 420 */
+            box-shadow: 0 0 60px rgba(123, 77, 255, 0.4);
+            animation: float 6s ease-in-out infinite;
+            margin-right: 150px;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Folded corner effect */
+        .story-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+            width: 64px;
+            /* Reduced from 80 */
+            height: 64px;
+            /* Reduced from 80 */
+            background: #0F0823;
+            border-top-left-radius: 16px;
+            /* Reduced from 20 */
+            box-shadow: -15px -15px 30px rgba(123, 77, 255, 0.2);
+        }
+
+        /* Large play icon */
+        .play-icon {
+            position: absolute;
+            bottom: -10px;
+            right: -20px;
+            z-index: 10;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 32px 0 32px 48px;
+            /* Reduced from 40/0/40/60 */
+            border-color: transparent transparent transparent #D98BFF;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+            cursor: pointer;
+            transition: transform 0.25s ease, filter 0.25s ease;
+            transform-origin: center;
+        }
+
+        .story-card:hover .play-icon {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 25px rgba(217, 139, 255, 0.8));
+            border-color: transparent transparent transparent #F0C4FF;
+        }
+
+        /* Text side (right visually) */
+        .detail-text {
+            flex: 1;
+            max-width: 550px;
+            /* Reduced from 700 */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            /* Right align in RTL */
+            text-align: right;
+        }
+
+        .detail-title {
+            font-family: 'Cairo', sans-serif;
+            font-size: 3rem;
+            /* Reduced from 3.8 */
+            font-weight: 800;
+            color: #9C71D9;
+            /* Matching the muted purple text */
+            margin-bottom: 20px;
+            /* Reduced from 24 */
+            text-shadow: 0 0 16px rgba(156, 113, 217, 0.4);
+            line-height: 1.2;
+        }
+
+        .detail-desc {
+            font-family: 'Cairo', sans-serif;
+            font-size: 1.05rem;
+            /* Reduced from 1.25 */
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.7;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @media (max-width: 600px) {
+            .detail-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+                padding: 0 20px;
+            }
+            .story-card {
+                width: 200px;
+                height: 200px;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            .story-card::after {
+                width: 40px;
+                height: 40px;
+            }
+            .play-icon {
+                border-width: 24px 0 24px 36px;
+                bottom: -5px;
+                right: -10px;
+            }
+            .detail-text {
+                align-items: center;
+                text-align: center;
+            }
+            .detail-title {
+                font-size: 2.2rem;
+            }
+            .detail-desc {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== BACKGROUND ===== -->
+    <div class="story-page">
+        <div class="story-bg"></div>
+        <div class="story-nebula-glow"></div>
+        <div class="story-stars" id="story-stars"></div>
+    </div>
+
+    <app-header></app-header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="detail-content">
+        <div class="detail-container">
+
+            <!-- Card (Left visually) -->
+            <div class="detail-card-wrapper">
+                <div class="story-card">
+                    <div class="play-icon"></div>
+                </div>
+            </div>
+
+            <!-- Text (Right visually) -->
+            <div class="detail-text">
+                <h1 class="detail-title">لسان اليمن (الهمداني)</h1>
+                <p class="detail-desc">
+                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
+                    laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation
+                    ullamcorpes suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure
+                    dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla
+                    facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
+                    delenit augue duis dolore te feugait nulla facilisi.
+
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="js/header.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // ===== STAR PARTICLES =====
+        const starsLayer = document.getElementById('story-stars');
+        for (let i = 0; i < 100; i++) {
+            const s = document.createElement('div');
+            s.className = 's-star';
+            const size = 1 + Math.random() * 2.5;
+            s.style.cssText = `
+    left: ${Math.random() * 100}%;
+    top: ${Math.random() * 100}%;
+    width: ${size}px;
+    height: ${size}px;
+    --dur: ${2 + Math.random() * 5}s;
+    --op: ${0.2 + Math.random() * 0.7};
+    opacity: var(--op);
+    animation-delay: ${Math.random() * 5}s;
+  `;
+            starsLayer.appendChild(s);
+        }
+    </script>
+</body>
+
+</html>

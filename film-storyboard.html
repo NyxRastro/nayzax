@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ستوري بورد — لسان اليمن (الهمداني) — نيزك</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Zain:wght@300;400;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        /* ===== PAGE BASE ===== */
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            background-color: #0F0823;
+            font-family: 'Cairo', sans-serif;
+            color: #fff;
+        }
+
+        /* ===== FULL-SCREEN BG ===== */
+        .story-page {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .story-bg {
+            position: absolute;
+            inset: 0;
+            background-image: url('images/nebula_bg.jpg');
+            background-size: cover;
+            background-position: center center;
+            z-index: 0;
+        }
+
+        .story-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg,
+                    rgba(10, 4, 25, 0.93) 0%,
+                    rgba(15, 7, 38, 0.88) 40%,
+                    rgba(8, 3, 20, 0.95) 100%);
+        }
+
+        /* Animated stars overlay */
+        .story-stars {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .s-star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: sTwinkle var(--dur, 3s) ease-in-out infinite;
+        }
+
+        @keyframes sTwinkle {
+
+            0%,
+            100% {
+                opacity: var(--op, 0.6);
+            }
+
+            50% {
+                opacity: 0.1;
+            }
+        }
+
+        /* Subtle center glow */
+        .story-nebula-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 400px;
+            background: radial-gradient(ellipse, rgba(144, 81, 196, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ===== CONTENT WRAPPER ===== */
+        .storyboard-content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 70px;
+            /* nav offset */
+        }
+
+        .gallery-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            /* Space between arrows and grid */
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 40px;
+        }
+
+        /* ===== GRID ===== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 20px 24px;
+            /* row-gap col-gap */
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* Individual Storyboard Card */
+        .sb-card {
+            background: linear-gradient(145deg, #CF7CFB 0%, #a640bd69 100%);
+            /* Same pink-purple from previous */
+            border-radius: 20px;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            /* Roughly a wide rectangular ratio */
+            box-shadow: 0 8px 24px rgba(123, 77, 255, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sb-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(123, 77, 255, 0.3);
+        }
+
+        /* ===== ARROWS ===== */
+        .nav-arrow {
+            width: 48px;
+            height: 48px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-arrow:hover {
+            transform: scale(1.1);
+        }
+
+        .arrow-icon {
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 16px 20px 16px 0;
+            /* Left pointing base */
+            border-color: transparent #8B5BA9 transparent transparent;
+            /* Muted darker purple */
+            filter: drop-shadow(0 0 8px rgba(139, 91, 169, 0.4));
+        }
+
+        /* Matches the visual style in the user's reference:
+           Left arrow points left, Right points right. */
+        .arrow-right .arrow-icon {
+            border-width: 16px 0 16px 20px;
+            /* Pointing right */
+            border-color: transparent transparent transparent #8B5BA9;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .gallery-container {
+                gap: 10px;
+                padding: 0 15px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(6, 1fr);
+                gap: 16px;
+                max-height: 70vh;
+                overflow-y: auto;
+                padding-right: 10px;
+            }
+
+            /* Hide arrows on mobile if it scrolls vertically */
+            .nav-arrow {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== BACKGROUND ===== -->
+    <div class="story-page">
+        <div class="story-bg"></div>
+        <div class="story-nebula-glow"></div>
+        <div class="story-stars" id="story-stars"></div>
+    </div>
+
+    <app-header></app-header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="storyboard-content">
+        <div class="gallery-container">
+
+            <!-- Right Arrow (Visually on the Right in RTL layout, points Right) -->
+            <button class="nav-arrow arrow-right" aria-label="التالي">
+                <div class="arrow-icon"></div>
+            </button>
+
+            <!-- 3x2 Grid -->
+            <div class="cards-grid">
+                <div class="sb-card"></div>
+                <div class="sb-card"></div>
+                <div class="sb-card"></div>
+
+                <div class="sb-card"></div>
+                <div class="sb-card"></div>
+                <div class="sb-card"></div>
+            </div>
+
+            <!-- Left Arrow (Visually on the Left in RTL layout, points Left) -->
+            <button class="nav-arrow arrow-left" aria-label="السابق">
+                <div class="arrow-icon"></div>
+            </button>
+
+        </div>
+    </main>
+
+    <script src="js/header.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // ===== STAR PARTICLES =====
+        const starsLayer = document.getElementById('story-stars');
+        for (let i = 0; i < 100; i++) {
+            const s = document.createElement('div');
+            s.className = 's-star';
+            const size = 1 + Math.random() * 2.5;
+            s.style.cssText = `
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                width: ${size}px;
+                height: ${size}px;
+                --dur: ${2 + Math.random() * 5}s;
+                --op: ${0.2 + Math.random() * 0.7};
+                opacity: var(--op);
+                animation-delay: ${Math.random() * 5}s;
+            `;
+            starsLayer.appendChild(s);
+        }
+    </script>
+</body>
+
+</html>

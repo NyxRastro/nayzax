@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>سالي — الشخصيات — نيزك</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        body {
+            background: linear-gradient(160deg, #0D0820 0%, #1E0745 50%, #2D0F6B 100%);
+            min-height: 100vh;
+        }
+
+        .char-detail-page {
+            min-height: 100vh;
+            padding-top: var(--nav-height);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 28px;
+            padding-bottom: 60px;
+            position: relative;
+        }
+
+        .char-glow {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(123, 77, 255, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+
+        .char-detail-inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .char-avatar-large {
+            width: 260px;
+            height: 330px;
+            background: linear-gradient(160deg, #3b1a6e, #6d28d9);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8rem;
+            border: 2px solid rgba(192, 132, 252, 0.4);
+            box-shadow: 0 0 60px rgba(123, 77, 255, 0.4);
+        }
+
+        .char-traits {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .trait-badge {
+            padding: 6px 18px;
+            border-radius: 50px;
+            background: rgba(123, 77, 255, 0.2);
+            border: 1px solid rgba(192, 132, 252, 0.35);
+            font-size: 0.85rem;
+            color: var(--purple-light);
+        }
+
+        .char-nav-arrows {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .char-back-link {
+            position: absolute;
+            top: calc(var(--nav-height) + 20px);
+            right: 32px;
+            z-index: 2;
+        }
+    </style>
+</head>
+
+<body>
+
+        <app-header></app-header>
+
+    <button class="btn-back char-back-link" onclick="window.location.href='characters.html'">&#8592; الشخصيات</button>
+
+    <div class="char-detail-page">
+        <div class="char-glow"></div>
+
+        <div class="char-detail-inner">
+            <h1 class="char-detail-name">سالي</h1>
+
+            <div class="char-avatar-large">👩‍🚀</div>
+
+            <div class="char-traits">
+                <span class="trait-badge">🌟 شجاعة</span>
+                <span class="trait-badge">💡 ذكية</span>
+                <span class="trait-badge">❤️ محبة للمغامرة</span>
+                <span class="trait-badge">🚀 قائدة</span>
+            </div>
+
+            <p class="char-detail-desc">
+                سالي هي بطلة رحلة نيزك، فتاة صغيرة تحمل قلبًا كبيرًا وعقلًا متوقدًا.
+                تؤمن بأن الكون لا نهاية له، وكذلك أحلام الإنسان.
+                تقود مغامرتها الفضائية بشجاعة وتحدٍّ، وتُلهم من حولها للتمسك بأحلامهم.
+            </p>
+
+            <!-- Next character -->
+            <div class="char-nav-arrows">
+                <button class="arrow-btn" disabled style="opacity:0.35">&#8594;</button>
+                <a href="character-2.html"><button class="arrow-btn">&#8592;</button></a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/header.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

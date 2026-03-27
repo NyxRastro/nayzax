@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | نيزك</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Zain:wght@300;400;700;800;900&display=swap" rel="stylesheet" />
+    <!-- Icons (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body class="admin-body">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+        <a href="index.html" class="admin-logo">
+            <div class="nav-logo-icon"></div>
+            <div class="nav-logo-text">نيزك</div>
+        </a>
+
+        <div class="admin-menu">
+            <div class="admin-menu-item active" data-target="dashboard">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>الرئيسية</span>
+            </div>
+            <div class="admin-menu-item" data-target="stories">
+                <i class="fa-solid fa-headphones"></i>
+                <span>القصص المسموعة</span>
+            </div>
+            <div class="admin-menu-item" data-target="movies">
+                <i class="fa-solid fa-film"></i>
+                <span>الأفلام</span>
+            </div>
+            <div class="admin-menu-item" data-target="magazines">
+                <i class="fa-solid fa-book-open"></i>
+                <span>المجلات</span>
+            </div>
+            <div style="flex: 1;"></div>
+            <div class="admin-menu-item">
+                <i class="fa-solid fa-gear"></i>
+                <span>الإعدادات</span>
+            </div>
+            <a href="index.html" class="admin-menu-item" style="color: #EF4444; text-decoration: none;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>تسجيل خروج</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="admin-main">
+        
+        <!-- HEADER -->
+        <header class="admin-header">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="admin-hamburger" id="admin-hamburger-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h1 class="admin-page-title" id="page-title">الرئيسية</h1>
+            </div>
+            
+            <div class="admin-user">
+                <span>مرحباً، المشرف</span>
+                <img src="images/robot.jpg" alt="Admin" onerror="this.src='https://ui-avatars.com/api/?name=Admin&background=C084FC&color=fff'" />
+            </div>
+        </header>
+
+        <!-- DASHBOARD VIEW -->
+        <div class="admin-content-view active" id="view-dashboard">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-headphones"></i></div>
+                    <div class="stat-info">
+                        <h3>إجمالي القصص</h3>
+                        <div class="stat-val">24</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(236, 72, 153, 0.2); color: #EC4899;"><i class="fa-solid fa-film"></i></div>
+                    <div class="stat-info">
+                        <h3>إجمالي الأفلام</h3>
+                        <div class="stat-val">8</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(52, 211, 153, 0.2); color: #34D399;"><i class="fa-solid fa-book-open"></i></div>
+                    <div class="stat-info">
+                        <h3>المجلات والمقالات</h3>
+                        <div class="stat-val">12</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Table Placeholder -->
+            <div class="admin-actions" style="margin-top: 50px;">
+                <h2 style="font-size: 1.4rem; color: #fff;">آخر الإضافات</h2>
+            </div>
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>العنوان</th>
+                            <th>النوع</th>
+                            <th>تاريخ الإضافة</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>قصة الجبل المفقود</td>
+                            <td>قصة مسموعة</td>
+                            <td>24 مارس 2026</td>
+                            <td><span class="status-badge status-active">منشور</span></td>
+                        </tr>
+                        <tr>
+                            <td>فيلم رحلة عبر الزمن</td>
+                            <td>فيلم</td>
+                            <td>22 مارس 2026</td>
+                            <td><span class="status-badge status-draft">مسودة</span></td>
+                        </tr>
+                        <tr>
+                            <td>مجلة الفضاء العدد 5</td>
+                            <td>مجلة</td>
+                            <td>18 مارس 2026</td>
+                            <td><span class="status-badge status-active">منشور</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- STORIES VIEW -->
+        <div class="admin-content-view" id="view-stories">
+            <div class="admin-actions">
+                <div class="search-box">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="ابحث في القصص..." />
+                </div>
+                <button class="btn-primary" onclick="openModal('modal-story')">
+                    <i class="fa-solid fa-plus"></i> إضافة قصة جديدة
+                </button>
+            </div>
+
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>القصة</th>
+                            <th>المدة</th>
+                            <th>تاريخ الإضافة</th>
+                            <th>الحالة</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="td-media">
+                                    <div style="width: 48px; height: 48px; border-radius: 10px; background: #C084FC; display:flex; align-items:center; justify-content:center; font-size: 1.5rem;"><i class="fa-solid fa-music"></i></div>
+                                    <div>
+                                        <strong>الحلقة الأولى — بداية الرحلة</strong>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>12:35 د</td>
+                            <td>10 يناير 2026</td>
+                            <td><span class="status-badge status-active">منشور</span></td>
+                            <td>
+                                <div class="td-actions">
+                                    <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="td-media">
+                                    <div style="width: 48px; height: 48px; border-radius: 10px; background: #C084FC; display:flex; align-items:center; justify-content:center; font-size: 1.5rem;"><i class="fa-solid fa-music"></i></div>
+                                    <div>
+                                        <strong>الحلقة الثانية — الكوكب الغريب</strong>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>14:20 د</td>
+                            <td>15 فبراير 2026</td>
+                            <td><span class="status-badge status-active">منشور</span></td>
+                            <td>
+                                <div class="td-actions">
+                                    <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MOVIES VIEW (Similar to Stories) -->
+        <div class="admin-content-view" id="view-movies">
+            <div class="admin-actions">
+                <div class="search-box">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="ابحث في الأفلام..." />
+                </div>
+                <button class="btn-primary" onclick="openModal('modal-movie')">
+                    <i class="fa-solid fa-plus"></i> إضافة فيلم جديد
+                </button>
+            </div>
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>الفيلم</th>
+                            <th>المدة/التاريخ</th>
+                            <th>الوصف</th>
+                            <th>الحالة</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="td-media">
+                                    <img src="images/robot.jpg" alt="Thumnail" />
+                                    <div>
+                                        <strong>رحلة البطل الصغير</strong>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>1 س و 20 د</td>
+                            <td>فيلم تعليمي عن الشجاعة...</td>
+                            <td><span class="status-badge status-active">منشور</span></td>
+                            <td>
+                                <div class="td-actions">
+                                    <button class="btn-icon edit"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MAGAZINES VIEW -->
+        <div class="admin-content-view" id="view-magazines">
+             <div class="admin-actions">
+                <div class="search-box">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="ابحث في المجلات..." />
+                </div>
+                <button class="btn-primary" onclick="openModal('modal-magazine')">
+                    <i class="fa-solid fa-plus"></i> إضافة عدد مجلة
+                </button>
+            </div>
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>المجلة / العدد</th>
+                            <th>تاريخ النشر</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Magazines injected here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </main>
+
+    <!-- ===== MODALS ===== -->
+
+    <!-- STORY MODAL -->
+    <div class="modal-overlay" id="modal-story">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>إضافة قصة مسموعة جديدة</h2>
+                <button class="modal-close" onclick="closeModal('modal-story')"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-story" onsubmit="event.preventDefault(); saveStory();">
+                    <div class="admin-form-group">
+                        <label>عنوان القصة</label>
+                        <input type="text" name="title" placeholder="أدخل عنوان القصة" required />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col admin-form-group">
+                            <label>المدة (دقيقة)</label>
+                            <input type="text" name="duration" placeholder="مثال: 12:35 د" required />
+                        </div>
+                        <div class="form-col admin-form-group">
+                            <label>حالة النشر</label>
+                            <select name="status">
+                                <option value="1">منشور</option>
+                                <option value="0">مسودة مسجلة</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="admin-form-group">
+                        <label>صورة الغلاف (اختياري)</label>
+                        <div class="file-upload-box">
+                            <input type="file" name="cover_image" accept="image/*" />
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <p>انقر أو اسحب الصورة هنا</p>
+                            <span>اختياري للقصص. (PNG, JPG)</span>
+                        </div>
+                    </div>
+                    <div class="admin-form-group">
+                        <label>الملف الصوتي للقصة (MP3, WAV)</label>
+                        <div class="file-upload-box">
+                            <input type="file" name="audio_file" accept="audio/*" required />
+                            <i class="fa-solid fa-music"></i>
+                            <p>قم برفع الملف الصوتي</p>
+                        </div>
+                    </div>
+                    <div class="admin-form-group">
+                        <label>وصف القصة (اختياري)</label>
+                        <textarea name="description" placeholder="أدخل وصفاً قصيراً لأحداث القصة ومؤثراتها..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" type="button" onclick="closeModal('modal-story')">إلغاء</button>
+                <button class="btn-primary" id="btn-save-story" onclick="document.getElementById('form-story').requestSubmit()">حفظ القصة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOVIE MODAL -->
+    <div class="modal-overlay" id="modal-movie">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>إضافة فيلم جديد</h2>
+                <button class="modal-close" onclick="closeModal('modal-movie')"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-movie" onsubmit="event.preventDefault(); saveMovie();">
+                    <div class="admin-form-group">
+                        <label>عنوان الفيلم</label>
+                        <input type="text" name="title" placeholder="أدخل عنوان الفيلم" required />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col admin-form-group">
+                            <label>المدة</label>
+                            <input type="text" name="duration" placeholder="مثال: 1 س و 20 د" required />
+                        </div>
+                        <div class="form-col admin-form-group">
+                            <label>حالة النشر</label>
+                            <select name="status">
+                                <option value="1">منشور</option>
+                                <option value="0">مسودة مسجلة</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col admin-form-group">
+                            <label>صورة الغلاف (Thumbnail)</label>
+                            <div class="file-upload-box">
+                                <input type="file" name="thumbnail" accept="image/*" />
+                                <i class="fa-solid fa-image"></i>
+                                <p>اضغط للرفع</p>
+                            </div>
+                        </div>
+                        <div class="form-col admin-form-group">
+                            <label>ملف الفيلم الرئيسي</label>
+                            <div class="file-upload-box">
+                                <input type="file" name="video_file" accept="video/*" required />
+                                <i class="fa-solid fa-film"></i>
+                                <p>ارفع الفيلم</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col admin-form-group">
+                            <label>إعلان ترويجي (Trailer)</label>
+                            <div class="file-upload-box">
+                                <input type="file" name="trailer_file" accept="video/*" />
+                                <i class="fa-solid fa-video"></i>
+                                <p>ارفع التريلر</p>
+                            </div>
+                        </div>
+                        <div class="form-col admin-form-group">
+                            <label>ملف ستوري بورد (PDF/Img)</label>
+                            <div class="file-upload-box">
+                                <input type="file" name="storyboard_file" />
+                                <i class="fa-solid fa-file-pdf"></i>
+                                <p>ارفع الستوري بورد</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="admin-form-group">
+                        <label>وصف الفيلم</label>
+                        <textarea name="description" placeholder="أدخل ملخص قصة الفيلم..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" type="button" onclick="closeModal('modal-movie')">إلغاء</button>
+                <button class="btn-primary" id="btn-save-movie" onclick="document.getElementById('form-movie').requestSubmit()">حفظ الفيلم</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAGAZINE MODAL -->
+    <div class="modal-overlay" id="modal-magazine">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>إضافة عدد مجلة جديد</h2>
+                <button class="modal-close" onclick="closeModal('modal-magazine')"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-magazine" onsubmit="event.preventDefault(); saveMagazine();">
+                    <div class="admin-form-group">
+                        <label>عنوان العدد</label>
+                        <input type="text" name="title" placeholder="مثال: مجلة الفضاء - الإصدار المريخي" required />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col admin-form-group">
+                            <label>رقم العدد</label>
+                            <input type="number" name="issue_number" placeholder="مثال: 5" required />
+                        </div>
+                        <div class="form-col admin-form-group">
+                            <label>تاريخ النشر</label>
+                            <input type="date" name="publish_date" required />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col admin-form-group">
+                            <label>صورة الغلاف (Cover)</label>
+                            <div class="file-upload-box">
+                                <input type="file" name="cover_image" accept="image/*" />
+                                <i class="fa-solid fa-image"></i>
+                                <p>اضغط للرفع</p>
+                            </div>
+                        </div>
+                        <div class="form-col admin-form-group">
+                            <label>ملف المجلة (PDF)</label>
+                            <div class="file-upload-box">
+                                <input type="file" name="pdf_file" accept=".pdf" required />
+                                <i class="fa-solid fa-file-pdf"></i>
+                                <p>ارفع ملف المجلة</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" type="button" onclick="closeModal('modal-magazine')">إلغاء</button>
+                <button class="btn-primary" id="btn-save-magazine" onclick="document.getElementById('form-magazine').requestSubmit()">حفظ العدد</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Tab Switching Logic
+        const menuItems = document.querySelectorAll('.admin-menu-item[data-target]');
+        const views = document.querySelectorAll('.admin-content-view');
+        const pageTitle = document.getElementById('page-title');
+
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Update active menu link
+                menuItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+
+                // Change Title
+                pageTitle.textContent = item.querySelector('span').textContent;
+
+                // Switch View
+                const targetId = 'view-' + item.getAttribute('data-target');
+                views.forEach(view => {
+                    view.classList.remove('active');
+                    if (view.id === targetId) {
+                        view.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Modal Logic
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close on clicking outside modal
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if(e.target === overlay) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // Mobile Sidebar Toggle
+        const adminHamburger = document.getElementById('admin-hamburger-btn');
+        const adminSidebar = document.querySelector('.admin-sidebar');
+        if(adminHamburger && adminSidebar) {
+            adminHamburger.addEventListener('click', () => {
+                adminSidebar.classList.toggle('mobile-active');
+            });
+            
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', (e) => {
+                if(window.innerWidth <= 768 && !adminSidebar.contains(e.target) && !adminHamburger.contains(e.target)) {
+                    adminSidebar.classList.remove('mobile-active');
+                }
+            });
+        }
+    </script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

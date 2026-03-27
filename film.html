@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>الفيلم — نيزك</title>
+    <meta name="description" content="صفحة الفيلم — نيزك" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Zain:wght@300;400;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+        /* ===== BASE ===== */
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #0F0823;
+            color: #fff;
+        }
+
+        /* ===== BACKGROUND ===== */
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(900px 420px at 50% 46%, rgba(192, 132, 252, 0.08), transparent 65%),
+                linear-gradient(160deg, rgba(10, 4, 25, 0.93) 0%, rgba(15, 7, 38, 0.88) 40%, rgba(8, 3, 20, 0.95) 100%),
+                url("images/nebula_bg.jpg") center/cover no-repeat;
+        }
+
+        .stars {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle var(--dur, 3s) ease-in-out infinite;
+            opacity: var(--op, 0.6);
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: var(--op, 0.6);
+            }
+
+            50% {
+                opacity: 0.12;
+            }
+        }
+
+        /* ===== PAGE LAYOUT ===== */
+        .content {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .film-layout {
+            width: min(1120px, calc(100% - 80px));
+            margin-top: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 42px;
+        }
+
+        /* ===== HERO WIDE CARD (top) ===== */
+        .film-hero {
+            width: 100%;
+            height: 200px;
+            border-radius: 22px;
+            position: relative;
+            background: linear-gradient(90deg, #E1A7FF 0%, #A56DE0 45%, #5A3A6B 100%);
+            box-shadow:
+                0 16px 50px rgba(0, 0, 0, 0.28),
+                inset 0 1px 0 rgba(255, 255, 255, 0.10);
+            overflow: hidden;
+        }
+
+
+
+        /* play icon at mid-right */
+        .hero-play {
+            position: absolute;
+            right: 26px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 20px 0 20px 30px;
+            border-color: transparent transparent transparent rgba(235, 205, 255, 0.9);
+            filter: drop-shadow(0 0 12px rgba(192, 132, 252, 0.6));
+            opacity: .90;
+        }
+
+        /* ===== THUMBNAILS ROW ===== */
+        .thumbs {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .thumb {
+            width: 220px;
+            height: 220px;
+            border-radius: 22px;
+            position: relative;
+            flex: 0 0 auto;
+            background: linear-gradient(135deg, #D89BFF 0%, #9B67D7 55%, #7B4DBD 100%);
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.10);
+            overflow: hidden;
+            transition: transform .25s ease, box-shadow .25s ease, opacity .25s ease;
+            opacity: .95;
+            cursor: pointer;
+        }
+
+
+
+        .thumb:hover {
+            transform: translateY(-6px) scale(1.03);
+            opacity: 1;
+            box-shadow:
+                0 22px 70px rgba(192, 132, 252, 0.35),
+                0 10px 30px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        }
+
+        /* play icon on thumbs near fold */
+        .thumb .play {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 12px 0 12px 18px;
+            border-color: transparent transparent transparent rgba(235, 205, 255, 0.85);
+            filter: drop-shadow(0 0 10px rgba(192, 132, 252, 0.45));
+            opacity: .9;
+            pointer-events: none;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 980px) {
+            .film-layout {
+                width: min(900px, calc(100% - 44px));
+            }
+
+            .thumbs {
+                gap: 22px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .thumb {
+                width: 160px;
+                height: 160px;
+            }
+        }
+
+        @media (max-width: 620px) {
+            .nav-links {
+                display: none;
+            }
+
+            .film-layout {
+                margin-top: 0;
+            }
+
+            .film-hero {
+                height: 170px;
+            }
+
+            .thumb {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background -->
+    <div class="bg"></div>
+    <div class="stars" id="stars"></div>
+
+    <app-header></app-header>
+
+    <!-- Content -->
+    <main class="content">
+        <section class="film-layout" aria-label="صفحة الفيلم">
+            <!-- Wide hero film card -->
+            <div class="film-hero" role="button" tabindex="0" aria-label="تشغيل الفيلم">
+                <div class="hero-play" aria-hidden="true"></div>
+            </div>
+
+            <!-- Thumbnails row -->
+            <div class="thumbs" aria-label="مقاطع / عناصر مرتبطة">
+                <div class="thumb" role="button" tabindex="0" aria-label="تشغيل 1">
+                    <div class="play" aria-hidden="true"></div>
+                </div>
+                <div class="thumb" role="button" tabindex="0" aria-label="تشغيل 2">
+                    <div class="play" aria-hidden="true"></div>
+                </div>
+                <div class="thumb" role="button" tabindex="0" aria-label="تشغيل 3">
+                    <div class="play" aria-hidden="true"></div>
+                </div>
+                <div class="thumb" role="button" tabindex="0" aria-label="تشغيل 4">
+                    <div class="play" aria-hidden="true"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Stars (subtle)
+        const layer = document.getElementById('stars');
+        for (let i = 0; i < 110; i++) {
+            const s = document.createElement('div');
+            s.className = 'star';
+            const size = 1 + Math.random() * 2.4;
+            s.style.cssText = `
+        left:${Math.random() * 100}%;
+        top:${Math.random() * 100}%;
+        width:${size}px;
+        height:${size}px;
+        --dur:${2 + Math.random() * 5}s;
+        --op:${0.18 + Math.random() * 0.65};
+        opacity: var(--op);
+        animation-delay:${Math.random() * 5}s;
+      `;
+            layer.appendChild(s);
+        }
+
+        // Optional: keyboard click support for hero + thumbs
+        function enableEnterToClick(el, cb) {
+            el.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    cb();
+                }
+            });
+        }
+
+        const hero = document.querySelector('.film-hero');
+        hero.addEventListener('click', () => {
+            window.location.href = 'film-detail.html';
+        });
+        enableEnterToClick(hero, () => hero.click());
+
+        document.querySelectorAll('.thumb').forEach((t, idx) => {
+            t.addEventListener('click', () => {
+                window.location.href = 'film-detail.html';
+            });
+            enableEnterToClick(t, () => t.click());
+        });
+    </script>
+<script src="js/header.js"></script>
+</body>
+
+</html>

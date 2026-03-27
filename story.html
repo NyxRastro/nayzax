@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>القصص المسموعة — نيزك</title>
+    <meta name="description" content="استمع إلى قصص نيزك المسموعة — مغامرات صوتية مثيرة للأطفال" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Zain:wght@300;400;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+        /* Navbar will natively be transparent now */
+        /* ===== PAGE BASE ===== */
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        body {
+            background-color: #0F0823;
+            font-family: 'Cairo', sans-serif;
+            color: #fff;
+        }
+
+        /* ===== FULL-SCREEN BG ===== */
+        .story-page {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .story-bg {
+            position: absolute;
+            inset: 0;
+            background-image: url('images/nebula_bg.jpg');
+            /* change if needed */
+            background-size: cover;
+            background-position: center center;
+            z-index: 0;
+        }
+
+        .story-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg,
+                    rgba(10, 4, 25, 0.93) 0%,
+                    rgba(15, 7, 38, 0.88) 40%,
+                    rgba(8, 3, 20, 0.95) 100%);
+        }
+
+        /* Animated stars overlay */
+        .story-stars {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .s-star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: sTwinkle var(--dur, 3s) ease-in-out infinite;
+        }
+
+        @keyframes sTwinkle {
+
+            0%,
+            100% {
+                opacity: var(--op, 0.6);
+            }
+
+            50% {
+                opacity: 0.1;
+            }
+        }
+
+        /* Subtle center glow */
+        .story-nebula-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 760px;
+            height: 420px;
+            background: radial-gradient(ellipse, rgba(192, 132, 252, 0.06) 0%, transparent 65%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ===== CONTENT WRAPPER ===== */
+        .story-content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-top: 78px;
+            /* space for navbar */
+            box-sizing: border-box;
+        }
+
+        /* ===== CARD SLIDER AREA ===== */
+        .slider-wrapper {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* Arrow buttons — solid triangle chevrons like screenshot */
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
+            width: 44px;
+            height: 44px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .slider-arrow .arrow-shape {
+            display: block;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            transition: filter 0.25s ease, opacity 0.25s ease;
+            opacity: 0.75;
+        }
+
+        .arrow-left .arrow-shape {
+            border-width: 12px 18px 12px 0;
+            border-color: transparent #C084FC transparent transparent;
+        }
+
+        .arrow-right .arrow-shape {
+            border-width: 12px 0 12px 18px;
+            border-color: transparent transparent transparent #C084FC;
+        }
+
+        .slider-arrow:hover .arrow-shape {
+            opacity: 1;
+            filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.9));
+        }
+
+        .slider-arrow.arrow-right {
+            right: 28px;
+        }
+
+        .slider-arrow.arrow-left {
+            left: 28px;
+        }
+
+        /* ===== CARDS CONTAINER ===== */
+        .cards-track {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 90px;
+            /* wider spacing like the screenshot */
+            position: relative;
+        }
+
+        /* ===== INDIVIDUAL CARD — MATCH PHOTO ===== */
+        .story-card {
+            position: relative;
+            border-radius: 26px;
+            flex-shrink: 0;
+            cursor: pointer;
+            overflow: hidden;
+
+            /* soft neon purple gradient */
+            background: linear-gradient(135deg, #D89BFF 0%, #9B67D7 55%, #7B4DBD 100%);
+
+            /* subtle depth */
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.28),
+                inset 0 1px 0 rgba(255, 255, 255, 0.10);
+
+            transition:
+                transform .45s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow .35s ease,
+                opacity .35s ease;
+        }
+
+        .story-card.active {
+            width: 300px;
+            height: 300px;
+            opacity: 1;
+            z-index: 5;
+        }
+
+        .story-card.side {
+            width: 220px;
+            height: 220px;
+            opacity: .85;
+            z-index: 3;
+        }
+
+        .story-card:hover {
+            transform: translateY(-8px) scale(1.05);
+            opacity: 1;
+            box-shadow:
+                0 22px 70px rgba(192, 132, 252, 0.40),
+                0 10px 30px rgba(0, 0, 0, 0.28),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        }
+
+
+
+        /* tiny inner border highlight */
+        .story-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 26px;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+        }
+
+        /* photo cards have no text */
+        .card-inner {
+            display: none;
+        }
+
+        /* play icon near fold */
+        .play-icon {
+            position: absolute;
+            bottom: 18px;
+            right: 18px;
+            z-index: 10;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 15px 0 15px 20px;
+            border-color: transparent transparent transparent rgba(235, 205, 255, 0.85);
+            opacity: .9;
+            transition: filter .25s ease, opacity .25s ease, transform .25s ease;
+            pointer-events: none;
+            /* acts like decoration */
+        }
+
+        .story-card:hover .play-icon {
+            opacity: 1;
+            transform: translateX(-1px);
+            filter: drop-shadow(0 0 10px rgba(192, 132, 252, 0.9));
+        }
+
+        /* ===== PAGINATION DIAMONDS ===== */
+        .slider-dots {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 0;
+            z-index: 20;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border: 0;
+            padding: 0;
+            background: rgba(255, 255, 255, 0.25);
+            transform: rotate(45deg);
+            border-radius: 1.5px;
+            cursor: pointer;
+            transition: transform .2s ease, background .2s ease, box-shadow .2s ease, opacity .2s ease;
+            opacity: .75;
+        }
+
+        .dot.active {
+            background: #C084FC;
+            transform: rotate(45deg) scale(1.4);
+            box-shadow: 0 0 10px rgba(192, 132, 252, 0.8);
+        }
+
+        /* === DIRECTIONAL SLIDE ANIMATIONS === */
+        @keyframes slideFromRight {
+            from { opacity: 0; transform: translateX(120px) scale(0.85); }
+            to   { opacity: 1; transform: translateX(0)     scale(1);    }
+        }
+        @keyframes slideFromLeft {
+            from { opacity: 0; transform: translateX(-120px) scale(0.85); }
+            to   { opacity: 1; transform: translateX(0)      scale(1);    }
+        }
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: scale(0.85) translateY(16px); }
+            to   { opacity: 1; transform: scale(1)    translateY(0);    }
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 900px) {
+            .cards-track {
+                gap: 44px;
+            }
+
+            .story-card.active {
+                width: 260px;
+                height: 260px;
+            }
+
+            .story-card.side {
+                width: 200px;
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 620px) {
+            .story-content {
+                padding-top: 0;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .cards-track {
+                gap: 10px;
+            }
+
+            .story-card.active {
+                width: 140px;
+                height: 140px;
+            }
+
+            .story-card.side {
+                width: 100px;
+                height: 100px;
+            }
+
+            /* Move cards a bit above center */
+            .slider-wrapper {
+                height: auto;
+                min-height: 200px;
+                top: 42%;
+            }
+
+            /* Dots — full-width centering, higher and more visible */
+            .slider-dots {
+                left: 0;
+                right: 0;
+                width: 100%;
+                bottom: 125px;
+                transform: none;
+                z-index: 2000;
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                pointer-events: auto;
+            }
+
+            .dot {
+                display: block;
+                width: 9px;
+                height: 9px;
+                background: #FFFFFF !important;
+                opacity: 1 !important;
+                box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+            }
+            
+            .dot.active {
+                background: #D89BFF !important;
+                transform: rotate(45deg) scale(1.4);
+                box-shadow: 0 0 12px rgba(216, 155, 255, 1);
+            }
+
+            .slider-arrow {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ===== BACKGROUND ===== -->
+    <div class="story-page">
+        <div class="story-bg"></div>
+        <div class="story-nebula-glow"></div>
+        <div class="story-stars" id="story-stars"></div>
+    </div>
+
+    <app-header></app-header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="story-content">
+        <!-- Slider -->
+        <div class="slider-wrapper" aria-roledescription="carousel">
+            <!-- Left arrow (◄) -->
+            <button class="slider-arrow arrow-left" id="arrow-left" aria-label="السابق">
+                <span class="arrow-shape"></span>
+            </button>
+
+            <!-- Track -->
+            <div class="cards-track" id="cards-track">
+                <!-- Cards injected by JS -->
+            </div>
+
+            <!-- Right arrow (►) -->
+            <button class="slider-arrow arrow-right" id="arrow-right" aria-label="التالي">
+                <span class="arrow-shape"></span>
+            </button>
+        </div>
+        <!-- Pagination dots -->
+        <div class="slider-dots" id="slider-dots" aria-label="مؤشرات التنقل"></div>
+    </main>
+
+    <script>
+        // ===== STAR PARTICLES =====
+        const starsLayer = document.getElementById('story-stars');
+        for (let i = 0; i < 100; i++) {
+            const s = document.createElement('div');
+            s.className = 's-star';
+            const size = 1 + Math.random() * 2.5;
+            s.style.cssText = `
+        left: ${Math.random() * 100}%;
+        top: ${Math.random() * 100}%;
+        width: ${size}px;
+        height: ${size}px;
+        --dur: ${2 + Math.random() * 5}s;
+        --op: ${0.2 + Math.random() * 0.7};
+        opacity: var(--op);
+        animation-delay: ${Math.random() * 5}s;
+      `;
+            starsLayer.appendChild(s);
+        }
+
+        // ===== STORIES DATA =====
+        let stories = [];
+        let currentIndex = 0;
+        let navDir = 0; // -1 = going back (right arrow), +1 = going forward (left arrow)
+
+        const track = document.getElementById('cards-track');
+        const dotsContainer = document.getElementById('slider-dots');
+
+        async function initStories() {
+            try {
+                const res = await fetch('/api/stories');
+                let data = await res.json();
+                
+                // If there's no data from backend, fallback to empty state or default array
+                if (data && data.length > 0) {
+                    stories = data;
+                } else {
+                    stories = [
+                        { title: 'الحلقة الأولى', description: 'بداية الرحلة — 12:35 د', id: 1 },
+                        { title: 'الحلقة الثانية', description: 'لقاء الكوكب الغريب — 14:20 د', id: 2 },
+                        { title: 'الحلقة الثالثة', description: 'السر المدفون — 11:48 د', id: 3 },
+                        { title: 'الحلقة الرابعة', description: 'العودة إلى البيت — 13:10 د', id: 4 },
+                        { title: 'الحلقة الخامسة', description: 'النهاية المفاجئة — 10:55 د', id: 5 },
+                    ];
+                }
+                
+                // For logic, handle if there's only 1 or 2 stories.
+                currentIndex = Math.floor(stories.length / 2) || 0;
+                renderSlider();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderSlider() {
+            track.innerHTML = '';
+            dotsContainer.innerHTML = '';
+
+            // Show 3 visible cards: prev, current, next
+            const indices = [
+                (currentIndex - 1 + stories.length) % stories.length,
+                currentIndex,
+                (currentIndex + 1) % stories.length,
+            ];
+
+            indices.forEach((storyIdx, position) => {
+                const isActive = position === 1;
+
+                const card = document.createElement('div');
+                card.className = `story-card ${isActive ? 'active' : 'side'}`;
+
+                // Set dynamic cover image from SQLite if available
+                const cover = stories[storyIdx].cover_image;
+                if (cover) {
+                    card.style.backgroundImage = `url('${cover}')`;
+                    card.style.backgroundSize = 'cover';
+                    card.style.backgroundPosition = 'center';
+                }
+
+                // Photo cards are clean blocks: no title/meta inside, just play icon
+                card.innerHTML = `<div class="play-icon"></div>`;
+
+                // Apply directional animation
+                if (isActive) {
+                    const anim = navDir > 0 ? 'slideFromLeft' : navDir < 0 ? 'slideFromRight' : 'cardFadeIn';
+                    card.style.animation = `${anim} 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both`;
+                } else {
+                    card.style.animation = `cardFadeIn 0.4s ease both`;
+                }
+
+                // Click side cards to navigate
+                if (!isActive) {
+                    card.addEventListener('click', () => {
+                        navDir = position === 0 ? -1 : 1;
+                        currentIndex = storyIdx;
+                        renderSlider();
+                    });
+                } else {
+                    card.addEventListener('click', () => {
+                        window.navigateTo('story-detail.html');
+                    });
+                }
+
+                track.appendChild(card);
+            });
+
+            // Dots
+            stories.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.className = `dot ${i === currentIndex ? 'active' : ''}`;
+                dot.setAttribute('aria-label', `القصة ${i + 1}`);
+                dot.addEventListener('click', () => {
+                    currentIndex = i;
+                    renderSlider();
+                });
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        // Arrow controls
+        // Note: In RTL, you might prefer reversing behaviour; this matches your original logic.
+        document.getElementById('arrow-right').addEventListener('click', () => {
+            navDir = -1;
+            currentIndex = (currentIndex - 1 + stories.length) % stories.length;
+            renderSlider();
+        });
+
+        document.getElementById('arrow-left').addEventListener('click', () => {
+            navDir = 1;
+            currentIndex = (currentIndex + 1) % stories.length;
+            renderSlider();
+        });
+
+        // Keyboard nav
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                navDir = -1;
+                currentIndex = (currentIndex - 1 + stories.length) % stories.length;
+                renderSlider();
+            } else if (e.key === 'ArrowLeft') {
+                navDir = 1;
+                currentIndex = (currentIndex + 1) % stories.length;
+                renderSlider();
+            }
+        });
+
+        initStories();
+    </script>
+<script src="js/header.js"></script>
+</body>
+
+</html>

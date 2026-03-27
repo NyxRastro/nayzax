@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تفاصيل المجلة — نيزك</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Zain:wght@300;400;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        /* ===== PAGE BASE ===== */
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background-color: #0F0823;
+            font-family: 'Cairo', sans-serif;
+            color: #fff;
+        }
+
+        /* ===== FULL-SCREEN BG ===== */
+        .page-bg-container {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .page-bg {
+            position: absolute;
+            inset: 0;
+            background-image: url('images/nebula_bg.jpg');
+            background-size: cover;
+            background-position: center center;
+            opacity: 0.6;
+            z-index: 0;
+        }
+
+        .page-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(16, 8, 40, 0.4) 0%, rgba(10, 4, 25, 0.95) 100%);
+        }
+
+        .stars-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle var(--dur, 3s) ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: var(--op, 0.6);
+            }
+
+            50% {
+                opacity: 0.1;
+            }
+        }
+
+        /* ===== CONTENT WRAPPER ===== */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 60px;
+        }
+
+        /* ===== DETAIL CARD ===== */
+        .detail-card-frame {
+            position: relative;
+            width: 90%;
+            max-width: 950px;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(135deg, #DF9BFF 0%, #4b2169 100%);
+            border-radius: 45px;
+            padding: 24px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            display: flex;
+            gap: 20px;
+            animation: cardScaleIn 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        @keyframes cardScaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Internal content blocks */
+        .internal-grid {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1.5fr;
+            gap: 20px;
+        }
+
+        .content-block {
+            background: #0B051E;
+            border-radius: 35px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .block-large {
+            grid-row: span 2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page-bg-container">
+        <div class="page-bg"></div>
+        <div class="stars-overlay" id="stars-container"></div>
+    </div>
+
+    <!-- NAVBAR (Shared) -->
+    <app-header></app-header>
+
+    <main class="content-wrapper">
+
+        <section class="detail-card-frame">
+            <div class="internal-grid">
+                <div class="content-block block-large"></div>
+                <div class="content-block "></div>
+                <div class="content-block"></div>
+            </div>
+
+
+
+
+        </section>
+    </main>
+
+    <script src="js/header.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Stars background
+        const starsBox = document.getElementById('stars-container');
+        for (let i = 0; i < 80; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = 1 + Math.random() * 2;
+            star.style.cssText = `
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                width: ${size}px;
+                height: ${size}px;
+                --dur: ${2 + Math.random() * 4}s;
+                --op: ${0.4 + Math.random() * 0.5};
+            `;
+            starsBox.appendChild(star);
+        }
+    </script>
+</body>
+
+</html>
