@@ -144,45 +144,17 @@ button {
     gap: 12px;
 }
 
-.nav-logo-icon {
-    width: 32px;
-    height: 32px;
-    border: 1.5px solid rgba(220, 200, 255, 0.8);
-    border-radius: 4px;
-    transform: rotate(45deg);
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 10px rgba(192, 132, 252, 0.4);
+.nav-logo-img {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(192, 132, 252, 0.4));
+    transition: var(--transition);
 }
 
-.nav-logo-icon::after {
-    content: '';
-    width: 6px;
-    height: 6px;
-    background: #FF7B54;
-    border-radius: 50%;
-    box-shadow: 0 0 8px #FF7B54;
-}
-
-.nav-logo-icon::before {
-    content: '';
-    position: absolute;
-    width: 1px;
-    height: 16px;
-    background: rgba(220, 200, 255, 0.8);
-    top: -8px;
-    right: -8px;
-    transform: rotate(45deg);
-}
-
-.nav-logo-text {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--white);
-    letter-spacing: -0.5px;
-    font-family: 'Zain', 'Cairo', sans-serif;
+.nav-logo-img:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 15px rgba(192, 132, 252, 0.6));
 }
 
 .nav-links {
@@ -219,7 +191,7 @@ button {
     gap: 18px;
 }
 
-.nav-search,
+.nav-opinions-btn,
 .btn-login {
     height: 40px;
     display: flex;
@@ -230,51 +202,17 @@ button {
     padding: 0 20px;
     transition: var(--transition);
     box-shadow: inset 0 0 10px rgba(192, 132, 252, 0.1), 0 0 10px rgba(192, 132, 252, 0.1);
-}
-
-.nav-search {
-    gap: 10px;
-    padding: 0 16px;
-    cursor: text;
-}
-
-.nav-search:hover,
-.btn-login:hover {
-    background: rgba(192, 132, 252, 0.1);
-    box-shadow: inset 0 0 15px rgba(192, 132, 252, 0.2), 0 0 15px rgba(192, 132, 252, 0.3);
-}
-
-.nav-search input {
-    background: none;
-    border: none;
-    outline: none;
-    color: var(--white);
-    font-family: 'Cairo', sans-serif;
-    font-size: 0.95rem;
-    width: 60px;
-    transition: width var(--transition);
-}
-
-.nav-search input:focus {
-    width: 120px;
-}
-
-.nav-search input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.nav-search-icon {
-    color: #C084FC;
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-}
-
-.btn-login {
-    color: var(--white);
+    color: var(--white) !important;
     font-size: 0.95rem;
     font-weight: 700;
     cursor: pointer;
+    text-decoration: none;
+}
+
+.nav-opinions-btn:hover,
+.btn-login:hover {
+    background: rgba(192, 132, 252, 0.1);
+    box-shadow: inset 0 0 15px rgba(192, 132, 252, 0.2), 0 0 15px rgba(192, 132, 252, 0.3);
 }
 
 .nav-hamburger {
@@ -400,13 +338,21 @@ button {
 }
 
 .hero-logo {
-    font-size: clamp(5rem, 12vw, 10rem);
-    font-weight: 900;
-    color: rgba(240, 234, 248, 0.92);
-    letter-spacing: -2px;
-    line-height: 1;
-    text-shadow: 0 0 60px rgba(123, 77, 255, 0.4), 0 2px 20px rgba(0, 0, 0, 0.5);
-    font-family: 'Zain', 'Cairo', sans-serif;
+    max-width: clamp(250px, 45vw, 600px);
+    height: auto;
+    filter: drop-shadow(0 0 30px rgba(123, 77, 255, 0.4));
+    animation: fadeInLogo 1.2s ease-out forwards;
+}
+
+@keyframes fadeInLogo {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .hero-tagline {
@@ -914,16 +860,12 @@ button {
         gap: 10px;
     }
 
-    .nav-search,
+    .nav-opinions-btn,
     .btn-login {
         height: 32px;
-    }
-
-    .btn-login {
         font-size: 0.8rem;
         padding: 0 12px;
         white-space: nowrap;
-        /* Stops text wrapping */
     }
 
     .nav-search input {
@@ -1053,4 +995,39 @@ button {
         height: 44px;
         font-size: 1.1rem;
     }
+
+}
+
+/* ===== GLOBAL NAYZAK (SHOOTING STAR) ===== */
+.shooting-star-global {
+    position: absolute;
+    width: 240px;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(192, 132, 252, 0.7) 25%, transparent 100%);
+    border-radius: 50%;
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    animation: shootingGlobal var(--shot-dur, 8s) ease-in infinite;
+    animation-delay: var(--delay, 0s);
+}
+
+.shooting-star-global::before {
+    content: ' ';
+    position: absolute;
+    top: 50%;
+    left: -4px;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px 4px rgba(255,255,255,0.9), 0 0 24px 8px #C084FC, 0 0 35px 12px #7B4DFF;
+}
+
+@keyframes shootingGlobal {
+    0% { transform: rotate(-35deg) translateX(40vw) scale(var(--scale, 1)); opacity: 0; }
+    2% { opacity: 1; }
+    18% { transform: rotate(-35deg) translateX(-80vw) scale(var(--scale, 1)); opacity: 0; }
+    100% { transform: rotate(-35deg) translateX(-80vw) scale(var(--scale, 1)); opacity: 0; }
 }

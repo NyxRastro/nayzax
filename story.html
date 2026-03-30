@@ -185,14 +185,12 @@
 
         /* ===== INDIVIDUAL CARD — MATCH PHOTO ===== */
         .story-card {
-            position: relative;
+            /* soft neon purple gradient by default */
+            background: linear-gradient(135deg, #D89BFF 0%, #9B67D7 55%, #7B4DBD 100%);
             border-radius: 26px;
             flex-shrink: 0;
             cursor: pointer;
-            overflow: hidden;
-
-            /* soft neon purple gradient */
-            background: linear-gradient(135deg, #D89BFF 0%, #9B67D7 55%, #7B4DBD 100%);
+            overflow: visible; /* ensure play icon can hang off */
 
             /* subtle depth */
             box-shadow:
@@ -245,28 +243,7 @@
             display: none;
         }
 
-        /* play icon near fold */
-        .play-icon {
-            position: absolute;
-            bottom: 18px;
-            right: 18px;
-            z-index: 10;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 15px 0 15px 20px;
-            border-color: transparent transparent transparent rgba(235, 205, 255, 0.85);
-            opacity: .9;
-            transition: filter .25s ease, opacity .25s ease, transform .25s ease;
-            pointer-events: none;
-            /* acts like decoration */
-        }
-
-        .story-card:hover .play-icon {
-            opacity: 1;
-            transform: translateX(-1px);
-            filter: drop-shadow(0 0 10px rgba(192, 132, 252, 0.9));
-        }
+        /* Paginaion diamonds... */
 
         /* ===== PAGINATION DIAMONDS ===== */
         .slider-dots {
@@ -346,13 +323,14 @@
             }
 
             .story-card.active {
-                width: 140px;
-                height: 140px;
+                width: 170px;
+                height: 170px;
             }
 
             .story-card.side {
                 width: 100px;
                 height: 100px;
+                opacity: 0.45;
             }
 
             /* Move cards a bit above center */
@@ -395,6 +373,138 @@
                 display: none !important;
             }
         }
+
+
+        .audio-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .audio-modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 450px;
+            aspect-ratio: 1;
+            background: rgba(26, 15, 46, 0.4);
+            border-radius: 26px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transform: scale(0.95) translateY(20px);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .audio-modal-overlay.active .audio-modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .audio-cover-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.4;
+            filter: blur(8px);
+            z-index: 0;
+            transition: background-image 0.3s ease;
+        }
+        
+        .audio-cover-img {
+            position: absolute;
+            inset: 0;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+        }
+
+        .audio-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: all 0.2s ease;
+        }
+
+        .audio-modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .audio-controls-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(0deg, rgba(8,3,20,0.95) 0%, rgba(8,3,20,0.3) 100%);
+        }
+
+        .audio-title-display {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+            margin-bottom: 40px;
+            text-align: center;
+            width: 85%;
+        }
+
+        .audio-play-toggle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #D89BFF, #7B4DBD);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(192, 132, 252, 0.5);
+            transition: all 0.2s ease;
+        }
+
+        .audio-play-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 40px rgba(192, 132, 252, 0.8);
+        }
+
+        .audio-icon-shape {
+            display: block;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 14px 0 14px 22px;
+            border-color: transparent transparent transparent #fff;
+            margin-left: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .audio-play-toggle.playing .audio-icon-shape {
+            border-style: double;
+            border-width: 0 0 0 20px;
+            border-color: #fff;
+            height: 24px;
+            margin-left: 0;
+        }
     </style>
 </head>
 
@@ -431,6 +541,7 @@
         <div class="slider-dots" id="slider-dots" aria-label="مؤشرات التنقل"></div>
     </main>
 
+
     <script>
         // ===== STAR PARTICLES =====
         const starsLayer = document.getElementById('story-stars');
@@ -454,113 +565,116 @@
         // ===== STORIES DATA =====
         let stories = [];
         let currentIndex = 0;
-        let navDir = 0; // -1 = going back (right arrow), +1 = going forward (left arrow)
+        let navDir = 0; // -1 = back, +1 = forward
+
+        const TOTAL_SLOTS = 5; // Fixed number of slots/dots always visible
 
         const track = document.getElementById('cards-track');
         const dotsContainer = document.getElementById('slider-dots');
 
         async function initStories() {
             try {
-                const res = await fetch('/api/stories');
-                let data = await res.json();
-                
-                // If there's no data from backend, fallback to empty state or default array
-                if (data && data.length > 0) {
-                    stories = data;
-                } else {
-                    stories = [
-                        { title: 'الحلقة الأولى', description: 'بداية الرحلة — 12:35 د', id: 1 },
-                        { title: 'الحلقة الثانية', description: 'لقاء الكوكب الغريب — 14:20 د', id: 2 },
-                        { title: 'الحلقة الثالثة', description: 'السر المدفون — 11:48 د', id: 3 },
-                        { title: 'الحلقة الرابعة', description: 'العودة إلى البيت — 13:10 د', id: 4 },
-                        { title: 'الحلقة الخامسة', description: 'النهاية المفاجئة — 10:55 د', id: 5 },
-                    ];
-                }
-                
-                // For logic, handle if there's only 1 or 2 stories.
-                currentIndex = Math.floor(stories.length / 2) || 0;
+                const res  = await fetch('/api/stories');
+                const data = await res.json();
+                stories = data || [];
+                currentIndex = 0;
                 renderSlider();
             } catch (err) {
                 console.error(err);
+                renderSlider();
             }
         }
 
+        // Returns the story for a given slot index, or null if slot is empty
+        function storyAt(slotIndex) {
+            return stories[slotIndex] || null;
+        }
+
+        // Build a single card. story=null → dimmed empty slot
+        function buildCard(story, isActive, slotIndex) {
+            const card = document.createElement('div');
+            card.className = `story-card ${isActive ? 'active' : 'side'}`;
+
+            if (story && story.cover_image) {
+                card.style.backgroundColor    = '#ffffff';
+                card.style.backgroundImage      = `url('${story.cover_image}')`;
+                card.style.backgroundSize       = 'contain';
+                card.style.backgroundPosition   = 'center';
+                card.style.backgroundRepeat     = 'no-repeat';
+            }
+
+            if (!story) {
+                card.style.opacity = '0.35';
+                card.style.cursor  = 'default';
+                card.style.pointerEvents = 'none';
+                card.style.animation = 'cardFadeIn 0.4s ease both';
+                card.innerHTML = '';
+                return card;
+            }
+
+            card.innerHTML = ''; // No more play icon here
+
+            if (isActive) {
+                const anim = navDir > 0 ? 'slideFromLeft' : navDir < 0 ? 'slideFromRight' : 'cardFadeIn';
+                card.style.animation = `${anim} 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both`;
+            } else {
+                card.style.animation = 'cardFadeIn 0.4s ease both';
+                // Side cards with stories are clickable to navigate
+                card.addEventListener('click', () => {
+                    currentIndex = slotIndex;
+                    renderSlider();
+                });
+            }
+
+            // Active card click → open story detail page
+            if (isActive) {
+                card.addEventListener('click', () => {
+                    window.navigateTo('story-detail.html?id=' + story.id);
+                });
+            }
+
+            return card;
+        }
+
         function renderSlider() {
-            track.innerHTML = '';
+            track.innerHTML       = '';
             dotsContainer.innerHTML = '';
 
-            // Show 3 visible cards: prev, current, next
-            const indices = [
-                (currentIndex - 1 + stories.length) % stories.length,
-                currentIndex,
-                (currentIndex + 1) % stories.length,
-            ];
+            const prevSlot   = (currentIndex - 1 + TOTAL_SLOTS) % TOTAL_SLOTS;
+            const nextSlot   = (currentIndex + 1) % TOTAL_SLOTS;
 
-            indices.forEach((storyIdx, position) => {
-                const isActive = position === 1;
+            const prevStory   = storyAt(prevSlot);
+            const activeStory = storyAt(currentIndex);
+            const nextStory   = storyAt(nextSlot);
 
-                const card = document.createElement('div');
-                card.className = `story-card ${isActive ? 'active' : 'side'}`;
+            track.appendChild(buildCard(prevStory, false, prevSlot));
+            track.appendChild(buildCard(activeStory, true, currentIndex));
+            track.appendChild(buildCard(nextStory, false, nextSlot));
 
-                // Set dynamic cover image from SQLite if available
-                const cover = stories[storyIdx].cover_image;
-                if (cover) {
-                    card.style.backgroundImage = `url('${cover}')`;
-                    card.style.backgroundSize = 'cover';
-                    card.style.backgroundPosition = 'center';
-                }
-
-                // Photo cards are clean blocks: no title/meta inside, just play icon
-                card.innerHTML = `<div class="play-icon"></div>`;
-
-                // Apply directional animation
-                if (isActive) {
-                    const anim = navDir > 0 ? 'slideFromLeft' : navDir < 0 ? 'slideFromRight' : 'cardFadeIn';
-                    card.style.animation = `${anim} 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both`;
-                } else {
-                    card.style.animation = `cardFadeIn 0.4s ease both`;
-                }
-
-                // Click side cards to navigate
-                if (!isActive) {
-                    card.addEventListener('click', () => {
-                        navDir = position === 0 ? -1 : 1;
-                        currentIndex = storyIdx;
-                        renderSlider();
-                    });
-                } else {
-                    card.addEventListener('click', () => {
-                        window.navigateTo('story-detail.html');
-                    });
-                }
-
-                track.appendChild(card);
-            });
-
-            // Dots
-            stories.forEach((_, i) => {
+            // Always render TOTAL_SLOTS dots
+            for (let i = 0; i < TOTAL_SLOTS; i++) {
                 const dot = document.createElement('button');
                 dot.className = `dot ${i === currentIndex ? 'active' : ''}`;
                 dot.setAttribute('aria-label', `القصة ${i + 1}`);
                 dot.addEventListener('click', () => {
+                    navDir = i > currentIndex ? 1 : -1;
                     currentIndex = i;
                     renderSlider();
                 });
                 dotsContainer.appendChild(dot);
-            });
+            }
         }
 
-        // Arrow controls
-        // Note: In RTL, you might prefer reversing behaviour; this matches your original logic.
+        // Arrow controls — always wrap within TOTAL_SLOTS
         document.getElementById('arrow-right').addEventListener('click', () => {
             navDir = -1;
-            currentIndex = (currentIndex - 1 + stories.length) % stories.length;
+            currentIndex = (currentIndex - 1 + TOTAL_SLOTS) % TOTAL_SLOTS;
             renderSlider();
         });
 
         document.getElementById('arrow-left').addEventListener('click', () => {
             navDir = 1;
-            currentIndex = (currentIndex + 1) % stories.length;
+            currentIndex = (currentIndex + 1) % TOTAL_SLOTS;
             renderSlider();
         });
 
@@ -568,14 +682,43 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight') {
                 navDir = -1;
-                currentIndex = (currentIndex - 1 + stories.length) % stories.length;
+                currentIndex = (currentIndex - 1 + TOTAL_SLOTS) % TOTAL_SLOTS;
                 renderSlider();
             } else if (e.key === 'ArrowLeft') {
                 navDir = 1;
-                currentIndex = (currentIndex + 1) % stories.length;
+                currentIndex = (currentIndex + 1) % TOTAL_SLOTS;
                 renderSlider();
             }
         });
+
+        // Swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        track.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        track.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeThreshold = 50; 
+            const deltaX = touchEndX - touchStartX;
+
+            if (Math.abs(deltaX) > swipeThreshold) {
+                if (deltaX > 0) {
+                    navDir = -1; // Swipe Right → Prev
+                    currentIndex = (currentIndex - 1 + TOTAL_SLOTS) % TOTAL_SLOTS;
+                } else {
+                    navDir = 1;  // Swipe Left → Next
+                    currentIndex = (currentIndex + 1) % TOTAL_SLOTS;
+                }
+                renderSlider();
+            }
+        }
 
         initStories();
     </script>

@@ -104,22 +104,42 @@
 
         /* Button */
         .btn-gradient {
-            background: linear-gradient(90deg, #41D8C9 0%, #9554D6 100%);
+            background: linear-gradient(135deg, #b36ff3, #622971);
             border: none;
             border-radius: 50px;
             color: #fff;
+            font-family: 'Cairo', sans-serif;
             font-weight: 700;
-            font-size: 1rem;
-            padding: 10px 36px;
+            font-size: 1.05rem;
+            padding: 12px 40px;
             cursor: pointer;
             margin-top: 16px;
             transition: transform 0.25s ease, box-shadow 0.25s ease;
-            box-shadow: 0 8px 24px rgba(149, 84, 214, 0.4);
+            box-shadow: 0 4px 24px rgba(168, 85, 247, 0.45);
         }
 
         .btn-gradient:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 12px 32px rgba(149, 84, 214, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.7);
+        }
+
+        /* Simple Back Arrow */
+        .simple-back-arrow {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            z-index: 20;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+        }
+        .simple-back-arrow:hover {
+            color: #fff;
+            transform: translateX(-4px) scale(1.05); /* slightly left and larger */
+            filter: drop-shadow(0 0 10px rgba(192, 132, 252, 0.6));
+        }
+        .simple-back-arrow svg {
+            width: 32px;
+            height: 32px;
         }
 
         /* Footer */
@@ -196,14 +216,63 @@
             .subscribe-content {
                 padding-top: 90px;
             }
+            .simple-back-arrow {
+                top: 25px;
+                left: 25px;
+            }
+            .simple-back-arrow svg {
+                width: 28px;
+                height: 28px;
+            }
             .form-container {
                 max-width: 280px;
             }
+        }
+
+        /* ===== GLOBAL NAYZAK (SHOOTING STAR) ===== */
+        .shooting-star-global {
+            position: absolute;
+            width: 240px;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(192, 132, 252, 0.7) 25%, transparent 100%);
+            border-radius: 50%;
+            z-index: 1;
+            opacity: 0;
+            pointer-events: none;
+            animation: shootingGlobal var(--shot-dur, 8s) ease-in infinite;
+            animation-delay: var(--delay, 0s);
+        }
+
+        .shooting-star-global::before {
+            content: ' ';
+            position: absolute;
+            top: 50%;
+            left: -4px;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 4px rgba(255,255,255,0.9), 0 0 24px 8px #C084FC, 0 0 35px 12px #7B4DFF;
+        }
+
+        @keyframes shootingGlobal {
+            0% { transform: rotate(-35deg) translateX(40vw) scale(var(--scale, 1)); opacity: 0; }
+            2% { opacity: 1; }
+            18% { transform: rotate(-35deg) translateX(-80vw) scale(var(--scale, 1)); opacity: 0; }
+            100% { transform: rotate(-35deg) translateX(-80vw) scale(var(--scale, 1)); opacity: 0; }
         }
     </style>
 </head>
 
 <body>
+
+    <!-- Simple Back Arrow -->
+    <a href="index.html" class="simple-back-arrow" aria-label="العودة للصفحة الرئيسية">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6"/> <!-- Chevron Left -->
+        </svg>
+    </a>
 
     <!-- Background -->
     <div class="subscribe-bg"></div>
@@ -239,11 +308,10 @@
 
     <!-- Footer -->
     <div class="footer-nav">
-        <a href="#">عن نيزك</a>
-        <a href="#">من نحن</a>
-        <a href="#">اهدافنا</a>
-        <a href="#">اعمالنا</a>
-        <a href="#">تواصل معنا</a>
+        <a href="about.html">عن نيزك</a>
+        <a href="vision.html">الرؤية</a>
+        <a href="mission.html">الرسالة</a>
+        <a href="contact.html">تواصل معنا</a>
     </div>
 
     <script>
@@ -262,6 +330,37 @@
             `;
             sl.appendChild(s);
         }
+
+        // Shooting Stars
+        function createFallingStar() {
+            const star = document.createElement('div');
+            star.className = 'shooting-star-global';
+            
+            const startX = 60 + Math.random() * 40; // Starts from right
+            const startY = Math.random() * 40;     // Top half
+            const duration = 6 + Math.random() * 6;
+            const delay = Math.random() * 2;
+            const scale = 0.4 + Math.random() * 0.8;
+            
+            star.style.cssText = `
+                top: ${startY}%;
+                left: ${startX}%;
+                --shot-dur: ${duration}s;
+                --delay: ${delay}s;
+                --scale: ${scale};
+            `;
+            
+            document.body.appendChild(star);
+            
+            // Remove after animation cycle
+            setTimeout(() => {
+                star.remove();
+            }, (duration + delay) * 1000);
+        }
+
+        // Spawn shooting stars
+        setInterval(createFallingStar, 4000);
+        createFallingStar(); // Initial star
     </script>
 
 <script src="js/header.js"></script>

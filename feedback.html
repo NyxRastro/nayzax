@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ارائكم — نيزك</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Zain:wght@300;400;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+        .feedback-content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px;
+            box-sizing: border-box;
+        }
+
+        .feedback-container {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(26, 15, 46, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .feedback-title {
+            font-family: 'Cairo', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #C084FC;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px rgba(192, 132, 252, 0.3);
+        }
+
+        .feedback-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+        }
+
+        .feedback-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            text-align: right;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #fff;
+            margin-right: 5px;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #C084FC;
+            background: rgba(192, 132, 252, 0.05);
+            box-shadow: 0 0 0 4px rgba(192, 132, 252, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #D89BFF, #7B4DBD);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 10px 20px -5px rgba(123, 77, 189, 0.4);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(123, 77, 189, 0.6);
+            filter: brightness(1.1);
+        }
+
+        /* Background logic from other pages */
+        .bg-space {
+            margin: 0;
+            padding: 0;
+            background: #080314;
+            overflow-x: hidden;
+        }
+
+        .story-page {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .story-bg {
+            position: absolute;
+            inset: 0;
+            background: url('images/nebula_bg.jpg') no-repeat center center;
+            background-size: cover;
+            z-index: 0;
+        }
+
+        .story-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg,
+                    rgba(10, 4, 25, 0.93) 0%,
+                    rgba(15, 7, 38, 0.88) 40%,
+                    rgba(8, 3, 20, 0.95) 100%);
+        }
+
+        .s-star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle var(--dur) ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @media (max-width: 600px) {
+            .feedback-content {
+                padding: 120px 15px 40px;
+                justify-content: flex-start;
+            }
+
+            .feedback-container {
+                padding: 25px 20px;
+                border-radius: 24px;
+            }
+
+            .feedback-title {
+                font-size: 1.8rem;
+            }
+
+            .feedback-subtitle {
+                font-size: 0.95rem;
+                margin-bottom: 20px;
+            }
+
+            .form-input, .form-textarea {
+                font-size: 0.9rem;
+                padding: 10px 14px;
+            }
+
+            .btn-submit {
+                font-size: 1rem;
+                padding: 12px;
+            }
+        }
+
+        .success-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 3, 20, 0.95);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .success-overlay.active {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            color: #34D399;
+            margin-bottom: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-space">
+    <!-- ===== BACKGROUND ===== -->
+    <div class="story-page">
+        <div class="story-bg"></div>
+        <div class="story-stars" id="feedback-stars"></div>
+    </div>
+
+    <app-header></app-header>
+
+    <main class="feedback-content">
+        <div class="feedback-container">
+            <h1 class="feedback-title">شاركونا آراءكم</h1>
+            <p class="feedback-subtitle">يسعدنا دائماً سماع ملاحظاتكم حول نيزك لتطوير تجربتكم</p>
+
+            <form class="feedback-form" id="opinion-form">
+                <div class="form-group">
+                    <label class="form-label">الاسم (اختياري)</label>
+                    <input type="text" name="name" class="form-input" placeholder="" maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">رأيك أو ملاحظاتك</label>
+                    <textarea name="message" class="form-textarea" placeholder="أخبرنا بما يدور برأسك..." required maxlength="2000"></textarea>
+                </div>
+                <button type="submit" class="btn-submit" id="submit-btn">إرسال التعليق</button>
+            </form>
+        </div>
+    </main>
+
+    <div class="success-overlay" id="success-overlay">
+        <div class="success-icon">✓</div>
+        <h2 class="success-title">شكراً لك!</h2>
+        <p class="success-text">تم إرسال رأيك بنجاح، ملاحظاتك تساعدنا في النمو.</p>
+        <button class="btn-submit" style="min-width: 200px;" onclick="window.navigateTo('index.html')">العودة للرئيسية</button>
+    </div>
+
+    <style>
+        .success-title { font-size: 2.5rem; color: #fff; margin-bottom: 15px; }
+        .success-text { font-size: 1.2rem; color: rgba(255,255,255,0.8); margin-bottom: 30px; }
+        
+        @media (max-width: 600px) {
+            .success-title { font-size: 2rem; }
+            .success-text { font-size: 1rem; }
+        }
+    </style>
+
+    <script src="js/header.js"></script>
+    <script>
+        // Stars logic
+        const starsLayer = document.getElementById('feedback-stars');
+        for (let i = 0; i < 80; i++) {
+            const s = document.createElement('div');
+            s.className = 's-star';
+            const size = 1 + Math.random() * 2;
+            s.style.cssText = `
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                width: ${size}px;
+                height: ${size}px;
+                --dur: ${3 + Math.random() * 4}s;
+                opacity: ${0.2 + Math.random() * 0.7};
+                animation-delay: ${Math.random() * 5}s;
+            `;
+            starsLayer.appendChild(s);
+        }
+
+        // Form Submission
+        const form = document.getElementById('opinion-form');
+        const overlay = document.getElementById('success-overlay');
+        const submitBtn = document.getElementById('submit-btn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري الإرسال...';
+
+            try {
+                const res = await fetch('/api/opinions', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (res.ok) {
+                    overlay.classList.add('active');
+                } else {
+                    const data = await res.json();
+                    alert('عذراً: ' + (data.error || 'حدث خطأ ما'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('حدث خطأ في الاتصال بالسيرفر');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'إرسال التعليق';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تواصل معنا — نيزك</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            background-color: #0F0823;
+            font-family: 'Cairo', sans-serif;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Dark Nebula Background */
+        .story-bg {
+            position: fixed;
+            inset: 0;
+            background-image: url('images/nebula_bg.jpg');
+            background-size: cover;
+            background-position: center center;
+            z-index: 0;
+        }
+
+        .story-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg, rgba(10, 4, 25, 0.93) 0%, rgba(15, 7, 38, 0.88) 40%, rgba(8, 3, 20, 0.95) 100%);
+        }
+
+        /* Content Container */
+        .subscribe-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 650px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(20, 10, 50, 0.3);
+            padding: 50px 40px;
+            border-radius: 24px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        /* Typography */
+        .subscribe-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #D89BFF;
+            margin: 0 0 30px 0;
+            text-shadow: 0 0 20px rgba(192, 132, 252, 0.5);
+        }
+
+        .page-text {
+            font-size: 1.4rem;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 600;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        /* Contact Text & Insta */
+        .contact-link {
+            color: #41D8C9;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        .contact-link:hover {
+            color: #fff;
+            text-shadow: 0 0 8px rgba(65, 216, 201, 0.8);
+        }
+
+        .insta-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .insta-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0 0 15px 0;
+            font-family: sans-serif;
+            text-shadow: 0 0 10px rgba(192, 132, 252, 0.4);
+        }
+
+        .insta-icon {
+            width: 24px;
+            height: 24px;
+            stroke: #C084FC;
+        }
+
+        .insta-qr {
+            width: 160px;
+            height: 160px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+            background-color: #fff;
+            object-fit: contain;
+            padding: 10px;
+        }
+
+        .insta-qr:hover {
+            transform: scale(1.05);
+        }
+
+        /* Back Button */
+        .back-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-decoration: none;
+            z-index: 20;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+            box-shadow: 0 0 15px rgba(192, 132, 252, 0.4);
+        }
+
+        .back-btn svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        /* Twinkling Stars */
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: var(--op, 0.7);
+            animation: twinkle var(--dur, 3s) ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: var(--op, 0.7);
+            }
+
+            50% {
+                opacity: 0.15;
+            }
+        }
+
+        /* Dynamic Nayzak (Meteor) Animation */
+        .shooting-star {
+            position: absolute;
+            width: 240px;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(192, 132, 252, 0.7) 25%, transparent 100%);
+            border-radius: 50%;
+            z-index: 2;
+            opacity: 0;
+            pointer-events: none;
+            animation: shooting var(--shot-dur, 8s) ease-in infinite;
+            animation-delay: var(--delay, 0s);
+        }
+
+        .shooting-star::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -4px;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 4px rgba(255, 255, 255, 0.9), 0 0 24px 8px #C084FC, 0 0 35px 12px #7B4DFF;
+        }
+
+        @keyframes shooting {
+            0% {
+                transform: rotate(-35deg) translateX(40vw) scale(var(--scale, 1));
+                opacity: 0;
+            }
+
+            2% {
+                opacity: 1;
+            }
+
+            18% {
+                transform: rotate(-35deg) translateX(-80vw) scale(var(--scale, 1));
+                opacity: 0;
+            }
+
+            100% {
+                transform: rotate(-35deg) translateX(-80vw) scale(var(--scale, 1));
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .subscribe-title {
+                font-size: 1.8rem;
+                margin-bottom: 20px;
+            }
+
+            .page-text {
+                font-size: 1.05rem;
+                line-height: 1.65;
+            }
+
+            .form-container {
+                width: 92%;
+                padding: 35px 20px;
+                border-radius: 20px;
+                margin-bottom: 12vh;
+            }
+
+            .back-btn {
+                top: 20px;
+                right: 20px;
+                padding: 10px;
+            }
+
+            .back-btn svg {
+                width: 22px;
+                height: 22px;
+            }
+
+            .subscribe-content {
+                padding-top: 60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="story-bg"></div>
+    <div id="stars-layer" style="position:fixed;inset:0;z-index:1;pointer-events:none;"></div>
+
+    <a href="subscribe.html" class="back-btn" aria-label="رجوع">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+    </a>
+
+    <div class="subscribe-content">
+        <div class="form-container">
+            <h1 class="subscribe-title">تواصل معنا</h1>
+            <div class="insta-section">
+                <p class="insta-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="insta-icon">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                    حساب الانستجرام
+                </p>
+                <img src="images/insta.png" alt="Instagram QR Code" class="insta-qr">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sl = document.getElementById('stars-layer');
+        for (let i = 0; i < 80; i++) {
+            const s = document.createElement('div');
+            s.className = 'star';
+            s.style.cssText = `
+                left:${Math.random() * 100}%;
+                top:${Math.random() * 100}%;
+                --dur:${2 + Math.random() * 4}s;
+                --op:${0.3 + Math.random() * 0.7};
+                width:${1 + Math.random() * 2}px;
+                height:${1 + Math.random() * 2}px;
+                animation-delay:${Math.random() * 4}s;
+            `;
+            sl.appendChild(s);
+        }
+
+        for (let i = 0; i < 6; i++) {
+            const ss = document.createElement('div');
+            ss.className = 'shooting-star';
+
+            let startTop = Math.random() * 60 - 30; // -30vh to 30vh
+            let startLeft = Math.random() * 60 + 40; // 40vw to 100vw
+            let scale = 0.5 + Math.random() * 0.8; // 0.5x to 1.3x size
+
+            ss.style.cssText = `
+                top: ${startTop}vh;
+                left: ${startLeft}vw;
+                --scale: ${scale};
+                --shot-dur: ${7 + Math.random() * 6}s;
+                --delay: ${Math.random() * 12}s;
+            `;
+            sl.appendChild(ss);
+        }
+    </script>
+</body>
+
+</html>

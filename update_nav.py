@@ -5,8 +5,7 @@ base_nav = """    <!-- ===== NAV ===== -->
     <nav class="navbar" id="shared-navbar">
         <div class="navbar-right">
             <a href="index.html" class="nav-logo">
-                <div class="nav-logo-icon"></div>
-                <div class="nav-logo-text">نيزك</div>
+                <img src="images/logo.png" alt="Logo" class="nav-logo-img">
             </a>
             <ul class="nav-links">
                 <li><a href="index.html"{a_index}>الصفحة الرئيسية</a></li>
