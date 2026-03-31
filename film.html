@@ -12,6 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Zain:wght@300;400;700;800;900&display=swap"
         rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
 
     <style>
@@ -23,9 +24,10 @@
         html,
         body {
             width: 100%;
-            height: 100%;
+            min-height: 100%;
+            height: auto;
             margin: 0;
-            overflow: hidden;
+            overflow-y: auto;
         }
 
         body {
@@ -77,10 +79,12 @@
             position: relative;
             z-index: 5;
             width: 100%;
-            height: 100%;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding-top: 120px;
+            padding-bottom: 60px;
         }
 
         .film-layout {
@@ -102,6 +106,7 @@
                 0 16px 50px rgba(0, 0, 0, 0.28),
                 inset 0 1px 0 rgba(255, 255, 255, 0.10);
             overflow: hidden;
+            cursor: pointer;
         }
 
 
@@ -131,7 +136,7 @@
 
         .thumb {
             width: 220px;
-            height: 220px;
+            height: 330px;
             border-radius: 22px;
             position: relative;
             flex: 0 0 auto;
@@ -185,7 +190,7 @@
 
             .thumb {
                 width: 160px;
-                height: 160px;
+                height: 240px;
             }
         }
 
@@ -204,8 +209,34 @@
 
             .thumb {
                 width: 150px;
-                height: 150px;
+                height: 225px;
             }
+        }
+
+        /* Movie Title Tooltip / Label */
+        .movie-label {
+            position: absolute;
+            bottom: 0px;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.85));
+            padding: 15px 10px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: #fff;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
+        .thumb:hover .movie-label, .film-hero:hover .movie-label {
+            opacity: 1;
+        }
+
+        .no-movies {
+            text-align: center;
+            font-size: 1.4rem;
+            opacity: 0.6;
+            margin-top: 50px;
         }
     </style>
 </head>
@@ -220,25 +251,35 @@
     <!-- Content -->
     <main class="content">
         <section class="film-layout" aria-label="صفحة الفيلم">
-            <!-- Wide hero film card -->
-            <div class="film-hero" role="button" tabindex="0" aria-label="تشغيل الفيلم">
+            <!-- Wide hero film card (Static / Design element) -->
+            <div class="film-hero" id="hero-card" role="button" tabindex="0" aria-label="تشغيل الفيلم">
                 <div class="hero-play" aria-hidden="true"></div>
             </div>
 
-            <!-- Thumbnails row -->
-            <div class="thumbs" aria-label="مقاطع / عناصر مرتبطة">
-                <div class="thumb" role="button" tabindex="0" aria-label="تشغيل 1">
-                    <div class="play" aria-hidden="true"></div>
+            <!-- Thumbnails row (Max 4 for original design) -->
+            <div class="thumbs" id="thumbs-container" aria-label="مقاطع / عناصر مرتبطة">
+                <div class="thumb" id="thumb-0" style="display: none;">
+                    <div class="play"></div>
+                    <div class="movie-label"></div>
                 </div>
-                <div class="thumb" role="button" tabindex="0" aria-label="تشغيل 2">
-                    <div class="play" aria-hidden="true"></div>
+                <div class="thumb" id="thumb-1" style="display: none;">
+                    <div class="play"></div>
+                    <div class="movie-label"></div>
                 </div>
-                <div class="thumb" role="button" tabindex="0" aria-label="تشغيل 3">
-                    <div class="play" aria-hidden="true"></div>
+                <div class="thumb" id="thumb-2" style="display: none;">
+                    <div class="play"></div>
+                    <div class="movie-label"></div>
                 </div>
-                <div class="thumb" role="button" tabindex="0" aria-label="تشغيل 4">
-                    <div class="play" aria-hidden="true"></div>
+                <div class="thumb" id="thumb-3" style="display: none;">
+                    <div class="play"></div>
+                    <div class="movie-label"></div>
                 </div>
+                
+                <!-- Placeholders if less than 4 movies -->
+                <div class="thumb placeholder" id="p-0"><div class="play"></div></div>
+                <div class="thumb placeholder" id="p-1"><div class="play"></div></div>
+                <div class="thumb placeholder" id="p-2"><div class="play"></div></div>
+                <div class="thumb placeholder" id="p-3"><div class="play"></div></div>
             </div>
         </section>
     </main>
@@ -251,40 +292,59 @@
             s.className = 'star';
             const size = 1 + Math.random() * 2.4;
             s.style.cssText = `
-        left:${Math.random() * 100}%;
-        top:${Math.random() * 100}%;
-        width:${size}px;
-        height:${size}px;
-        --dur:${2 + Math.random() * 5}s;
-        --op:${0.18 + Math.random() * 0.65};
-        opacity: var(--op);
-        animation-delay:${Math.random() * 5}s;
-      `;
+                left:${Math.random() * 100}%;
+                top:${Math.random() * 100}%;
+                width:${size}px;
+                height:${size}px;
+                --dur:${2 + Math.random() * 5}s;
+                --op:${0.18 + Math.random() * 0.65};
+                opacity: var(--op);
+                animation-delay:${Math.random() * 5}s;
+            `;
             layer.appendChild(s);
         }
 
-        // Optional: keyboard click support for hero + thumbs
-        function enableEnterToClick(el, cb) {
-            el.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    cb();
-                }
-            });
+        async function loadMovies() {
+            try {
+                const res = await fetch('/api/movies');
+                const movies = await res.json();
+                const published = movies.filter(m => m.status === 1);
+
+                // Update Thumbnails
+                published.forEach((m, i) => {
+                    if (i < 4) {
+                        const thumb = document.getElementById(`thumb-${i}`);
+                        const placeholder = document.getElementById(`p-${i}`);
+                        
+                        if (thumb && placeholder) {
+                            placeholder.style.display = 'none';
+                            thumb.style.display = 'block';
+                            
+                            // Set poster as background with darkened overlay for text contrast
+                            if (m.thumbnail) {
+                                thumb.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.4)), url('${m.thumbnail}')`;
+                                thumb.style.backgroundSize = 'cover';
+                                thumb.style.backgroundPosition = 'center';
+                            }
+                            
+                            thumb.querySelector('.movie-label').innerText = m.title;
+                            thumb.onclick = () => window.location.href = `film-detail.html?id=${m.id}`;
+                        }
+                    }
+                });
+
+                // Hero card is static as requested
+                const hero = document.getElementById('hero-card');
+                hero.onclick = null;
+                hero.style.cursor = 'default';
+                hero.style.backgroundImage = ''; // Keep original gradient from CSS
+
+            } catch (err) {
+                console.error(err);
+            }
         }
 
-        const hero = document.querySelector('.film-hero');
-        hero.addEventListener('click', () => {
-            window.location.href = 'film-detail.html';
-        });
-        enableEnterToClick(hero, () => hero.click());
-
-        document.querySelectorAll('.thumb').forEach((t, idx) => {
-            t.addEventListener('click', () => {
-                window.location.href = 'film-detail.html';
-            });
-            enableEnterToClick(t, () => t.click());
-        });
+        document.addEventListener('DOMContentLoaded', loadMovies);
     </script>
 <script src="js/header.js"></script>
 </body>

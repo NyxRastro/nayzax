@@ -1,8 +1,9 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, Response
 import sqlite3
 import os
 import uuid
 import html
+import hashlib
 
 # Configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -65,10 +66,19 @@ def init_db():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS characters (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            movie_id INTEGER,
             name TEXT NOT NULL,
             role TEXT,
             image TEXT,
             description TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS movie_storyboards (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            movie_id INTEGER,
+            image TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
@@ -85,14 +95,80 @@ def init_db():
 
 init_db()
 
+# --- SECURITY MIDDLEWARE ---
+
+# The stored SHA-256 hashes for 'RAS' and 'El-Mejor712-Luna!'
+ADMIN_USERNAME_HASH = '8a84fd359f8103230fb6d3f16f55a4c077bf1813b828216da3b1bd3272326774'
+ADMIN_PASSWORD_HASH = '019ee9dab1867ea933f8ac445d07a7cf46fa6fd59f272664723b1f36fb8a3741'
+
+# This will map the word you type in the browser URL
+# If on Render, you set NAYZAK_ADMIN_PATH
+ADMIN_URL_PATH = os.environ.get('NAYZAK_ADMIN_PATH', '/secret-admin-x9f2k')
+
+@app.before_request
+def require_admin():
+    # If someone tries to access the backend files directly, show 404
+    if request.path in ['/admin.html', '/admin_view.html', '/admin-panel-x9f2k.html']:
+        return Response('Not Found', 404)
+        
+    # We protect the custom unguessable URL and all API modification endpoints
+    needs_protection = False
+    
+    if request.path == ADMIN_URL_PATH:
+        needs_protection = True
+    elif request.path.startswith('/api/') and request.method in ['POST', 'PUT', 'DELETE']:
+        needs_protection = True
+        
+    if needs_protection:
+        auth = request.authorization
+        if not auth or not auth.username or not auth.password:
+            return Response(
+                'Could not verify your access level for that URL.\n'
+                'You have to login with proper credentials', 401,
+                {'WWW-Authenticate': 'Basic realm="Login Required"'})
+                
+        # Scramble incoming credentials into SHA-256 Hashes
+        incoming_user_hash = hashlib.sha256(auth.username.encode('utf-8')).hexdigest()
+        incoming_pass_hash = hashlib.sha256(auth.password.encode('utf-8')).hexdigest()
+        
+        # Compare mathematical identities securely
+        if incoming_user_hash != ADMIN_USERNAME_HASH or incoming_pass_hash != ADMIN_PASSWORD_HASH:
+            return Response(
+                'Invalid credentials.', 401,
+                {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
 # --- ROUTES ---
+
+@app.route(ADMIN_URL_PATH)
+def secret_admin_route():
+    return app.send_static_file('admin_view.html')
 
 @app.route('/')
 def index():
     return app.send_static_file('index.html')
 
+ALLOWED_EXTENSIONS = {
+    '.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg',
+    '.mp4', '.webm', '.ogg', '.mov',
+    '.mp3', '.wav', '.m4a',
+    '.pdf'
+}
+
+def allowed_file(filename):
+    if not filename:
+        return False
+    ext = os.path.splitext(filename)[1].lower()
+    return ext in ALLOWED_EXTENSIONS
+
+def sanitize_input(text):
+    if text is None:
+        return None
+    return html.escape(str(text).strip())
+
 def save_file(file_obj):
     if not file_obj or file_obj.filename == '':
+        return None
+    if not allowed_file(file_obj.filename):
         return None
     ext = os.path.splitext(file_obj.filename)[1]
     filename = str(uuid.uuid4()) + ext
@@ -128,10 +204,10 @@ def get_stories():
 
 @app.route('/api/stories', methods=['POST'])
 def add_story():
-    title       = request.form.get('title')
-    duration    = request.form.get('duration')
+    title       = sanitize_input(request.form.get('title'))
+    duration    = sanitize_input(request.form.get('duration'))
     status      = request.form.get('status', type=int)
-    description = request.form.get('description')
+    description = sanitize_input(request.form.get('description'))
     cover_image = save_file(request.files.get('cover_image'))
     audio_file  = save_file(request.files.get('audio_file'))
     
@@ -148,10 +224,10 @@ def add_story():
 
 @app.route('/api/stories/<int:story_id>', methods=['PUT'])
 def update_story(story_id):
-    title       = request.form.get('title')
-    duration    = request.form.get('duration')
+    title       = sanitize_input(request.form.get('title'))
+    duration    = sanitize_input(request.form.get('duration'))
     status      = request.form.get('status', type=int)
-    description = request.form.get('description')
+    description = sanitize_input(request.form.get('description'))
 
     conn = get_db_connection()
     existing = conn.execute('SELECT * FROM stories WHERE id = ?', (story_id,)).fetchone()
@@ -200,10 +276,10 @@ def get_movies():
 
 @app.route('/api/movies', methods=['POST'])
 def add_movie():
-    title          = request.form.get('title')
-    duration       = request.form.get('duration')
+    title          = sanitize_input(request.form.get('title'))
+    duration       = sanitize_input(request.form.get('duration'))
     status         = request.form.get('status', type=int)
-    description    = request.form.get('description')
+    description    = sanitize_input(request.form.get('description'))
     thumbnail      = save_file(request.files.get('thumbnail'))
     video_file     = save_file(request.files.get('video_file'))
     trailer_file   = save_file(request.files.get('trailer_file'))
@@ -222,10 +298,10 @@ def add_movie():
 
 @app.route('/api/movies/<int:movie_id>', methods=['PUT'])
 def update_movie(movie_id):
-    title       = request.form.get('title')
-    duration    = request.form.get('duration')
+    title       = sanitize_input(request.form.get('title'))
+    duration    = sanitize_input(request.form.get('duration'))
     status      = request.form.get('status', type=int)
-    description = request.form.get('description')
+    description = sanitize_input(request.form.get('description'))
 
     conn = get_db_connection()
     existing = conn.execute('SELECT * FROM movies WHERE id = ?', (movie_id,)).fetchone()
@@ -260,6 +336,49 @@ def delete_movie(movie_id):
     conn.close()
     return jsonify({'success': True})
 
+@app.route('/api/movies/<int:movie_id>', methods=['GET'])
+def get_movie(movie_id):
+    conn = get_db_connection()
+    movie = conn.execute('SELECT * FROM movies WHERE id = ?', (movie_id,)).fetchone()
+    conn.close()
+    if not movie:
+        return jsonify({'error': 'Not found'}), 404
+    return jsonify(dict(movie))
+
+# ===== STORYBOARDS =====
+
+@app.route('/api/movies/<int:movie_id>/storyboards', methods=['GET'])
+def get_movie_storyboards(movie_id):
+    conn = get_db_connection()
+    storyboards = conn.execute('SELECT * FROM movie_storyboards WHERE movie_id = ? ORDER BY created_at ASC', (movie_id,)).fetchall()
+    conn.close()
+    return jsonify([dict(row) for row in storyboards])
+
+@app.route('/api/movies/<int:movie_id>/storyboards', methods=['POST'])
+def add_movie_storyboard(movie_id):
+    image = save_file(request.files.get('image'))
+    if not image:
+        return jsonify({'error': 'No image provided'}), 400
+    conn = get_db_connection()
+    cursor = conn.execute('INSERT INTO movie_storyboards (movie_id, image) VALUES (?, ?)', (movie_id, image))
+    new_id = cursor.lastrowid
+    conn.commit()
+    row = conn.execute('SELECT * FROM movie_storyboards WHERE id = ?', (new_id,)).fetchone()
+    conn.close()
+    return jsonify(dict(row)), 201
+
+@app.route('/api/storyboards/<int:sb_id>', methods=['DELETE'])
+def delete_storyboard(sb_id):
+    conn = get_db_connection()
+    sb = conn.execute('SELECT * FROM movie_storyboards WHERE id = ?', (sb_id,)).fetchone()
+    if sb and sb['image'] and os.path.exists(sb['image']):
+        try: os.remove(sb['image'])
+        except: pass
+    conn.execute('DELETE FROM movie_storyboards WHERE id = ?', (sb_id,))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
 # ===== MAGAZINES =====
 
 @app.route('/api/magazines', methods=['GET'])
@@ -271,9 +390,9 @@ def get_magazines():
 
 @app.route('/api/magazines', methods=['POST'])
 def add_magazine():
-    title        = request.form.get('title')
+    title        = sanitize_input(request.form.get('title'))
     issue_number = request.form.get('issue_number', type=int)
-    publish_date = request.form.get('publish_date')
+    publish_date = sanitize_input(request.form.get('publish_date'))
     cover_image  = save_file(request.files.get('cover_image'))
     pdf_file     = save_file(request.files.get('pdf_file'))
     
@@ -290,9 +409,9 @@ def add_magazine():
 
 @app.route('/api/magazines/<int:mag_id>', methods=['PUT'])
 def update_magazine(mag_id):
-    title        = request.form.get('title')
+    title        = sanitize_input(request.form.get('title'))
     issue_number = request.form.get('issue_number', type=int)
-    publish_date = request.form.get('publish_date')
+    publish_date = sanitize_input(request.form.get('publish_date'))
 
     conn = get_db_connection()
     existing = conn.execute('SELECT * FROM magazines WHERE id = ?', (mag_id,)).fetchone()
@@ -324,25 +443,39 @@ def delete_magazine(mag_id):
 
 # ===== CHARACTERS =====
 
-@app.route('/api/characters', methods=['GET'])
-def get_characters():
+@app.route('/api/movies/<int:movie_id>/characters', methods=['GET'])
+def get_movie_characters(movie_id):
     conn = get_db_connection()
-    chars = conn.execute('SELECT * FROM characters ORDER BY created_at DESC').fetchall()
+    chars = conn.execute('SELECT * FROM characters WHERE movie_id = ? ORDER BY created_at ASC', (movie_id,)).fetchall()
     conn.close()
     return jsonify([dict(ix) for ix in chars])
 
-@app.route('/api/characters', methods=['POST'])
-def add_character():
-    name        = request.form.get('name')
-    role        = request.form.get('role')
-    description = request.form.get('description')
+@app.route('/api/movies/<int:movie_id>/characters', methods=['POST'])
+def add_movie_character(movie_id):
+    name        = sanitize_input(request.form.get('name'))
+    role        = sanitize_input(request.form.get('role'))
+    description = sanitize_input(request.form.get('description'))
     image       = save_file(request.files.get('image'))
     
     conn = get_db_connection()
-    conn.execute('''
-        INSERT INTO characters (name, role, image, description)
-        VALUES (?, ?, ?, ?)
-    ''', (name, role, image, description))
+    cursor = conn.execute('''
+        INSERT INTO characters (movie_id, name, role, image, description)
+        VALUES (?, ?, ?, ?, ?)
+    ''', (movie_id, name, role, image, description))
+    new_id = cursor.lastrowid
+    conn.commit()
+    row = conn.execute('SELECT * FROM characters WHERE id = ?', (new_id,)).fetchone()
+    conn.close()
+    return jsonify(dict(row)), 201
+
+@app.route('/api/characters/<int:char_id>', methods=['DELETE'])
+def delete_character(char_id):
+    conn = get_db_connection()
+    char = conn.execute('SELECT * FROM characters WHERE id = ?', (char_id,)).fetchone()
+    if char and char['image'] and os.path.exists(char['image']):
+        try: os.remove(char['image'])
+        except: pass
+    conn.execute('DELETE FROM characters WHERE id = ?', (char_id,))
     conn.commit()
     conn.close()
     return jsonify({'success': True})
@@ -359,12 +492,12 @@ def get_opinions():
 @app.route('/api/opinions', methods=['POST'])
 def add_opinion():
     # Security: Sanitization & Basic Validation
-    raw_name    = request.form.get('name', 'زائر مجهول')
-    raw_message = request.form.get('message', '')
+    raw_name    = request.form.get('name')
+    raw_message = request.form.get('message')
 
     # Strong Sanitization
-    name    = html.escape(raw_name).strip()
-    message = html.escape(raw_message).strip()
+    name    = sanitize_input(raw_name) if raw_name else 'زائر مجهول'
+    message = sanitize_input(raw_message) if raw_message else ''
 
     # Field Length Validation
     if not message or len(message) < 2:

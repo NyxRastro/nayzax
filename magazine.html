@@ -10,6 +10,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Zain:wght@300;400;700;800;900&display=swap"
         rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
     <style>
         /* ===== PAGE BASE ===== */
@@ -91,6 +92,8 @@
             align-items: center;
             justify-content: center;
             width: 100%;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         /* Arrows — match story.html exactly */
@@ -98,7 +101,7 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            z-index: 20;
+            z-index: 100;
             width: 44px;
             height: 44px;
             background: none;
@@ -142,8 +145,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 90px;
+            gap: 40px; 
             position: relative;
+            width: 100%;
+            height: 450px;
         }
 
         /* ===== CARDS ===== */
@@ -155,42 +160,69 @@
             overflow: hidden;
             background: linear-gradient(135deg, #D89BFF 0%, #9B67D7 55%, #7B4DBD 100%);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.10);
-            transition: transform .45s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow .35s ease, opacity .35s ease;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background-size: cover;
+            background-position: center;
         }
 
         .mag-card-container.active {
-            width: 300px;
-            height: 300px;
+            width: 280px;
+            height: 400px;
             opacity: 1;
-            z-index: 5;
+            z-index: 10;
             box-shadow: 0 22px 70px rgba(192, 132, 252, 0.40), 0 10px 30px rgba(0, 0, 0, 0.28);
+            transform: scale(1);
         }
 
         .mag-card-container.side {
-            width: 220px;
-            height: 220px;
-            opacity: .85;
-            z-index: 3;
+            width: 200px;
+            height: 280px;
+            opacity: .75;
+            z-index: 5;
+            transform: scale(0.9);
+        }
+
+        .mag-card-container.far-side {
+            width: 150px;
+            height: 210px;
+            opacity: .4;
+            z-index: 2;
+            transform: scale(0.8);
         }
 
         .mag-card-container:hover {
             transform: translateY(-8px) scale(1.05);
             opacity: 1;
         }
+        .mag-card-container.active:hover {
+            transform: translateY(-8px) scale(1.02);
+        }
 
-        .play-icon {
+        .read-icon {
             position: absolute;
-            bottom: 18px;
-            right: 18px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
             z-index: 10;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 15px 0 15px 20px;
-            border-color: transparent transparent transparent rgba(235, 205, 255, 0.85);
-            opacity: .9;
-            transition: filter .25s ease, opacity .25s ease, transform .25s ease;
-            pointer-events: none;
+            width: 70px;
+            height: 70px;
+            background: rgba(192, 132, 252, 0.2);
+            border: 2px solid #C084FC;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            backdrop-filter: blur(4px);
+            color: #C084FC;
+            font-size: 1.8rem;
+        }
+
+        .mag-card-container.active:hover .read-icon {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            box-shadow: 0 0 25px rgba(192, 132, 252, 0.5);
         }
 
         /* ===== DOTS ===== */
@@ -203,7 +235,7 @@
             gap: 12px;
             justify-content: center;
             align-items: center;
-            z-index: 20;
+            z-index: 100;
         }
 
         .dot {
@@ -241,16 +273,18 @@
 
         /* Responsive Tweaks */
         @media (max-width: 900px) {
-            .cards-track { gap: 44px; }
-            .mag-card-container.active { width: 260px; height: 260px; }
-            .mag-card-container.side { width: 200px; height: 200px; }
+            .cards-track { gap: 20px; }
+            .mag-card-container.active { width: 220px; height: 310px; }
+            .mag-card-container.side { width: 160px; height: 230px; }
+            .mag-card-container.far-side { width: 110px; height: 160px; }
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 620px) {
             .content-wrapper { padding-top: 0; }
             .cards-track { gap: 10px; }
-            .mag-card-container.active { width: 140px; height: 140px; }
-            .mag-card-container.side { width: 100px; height: 100px; }
+            .mag-card-container.active { width: 180px; height: 260px; }
+            .mag-card-container.side { width: 100px; height: 140px; }
+            .mag-card-container.far-side { display: none; } 
             
             .slider-wrapper { top: 42%; }
 
@@ -284,7 +318,7 @@
     <app-header></app-header>
 
     <main class="content-wrapper">
-        <div class="slider-wrapper">
+        <div class="slider-wrapper" id="mag-slider">
             <button class="nav-arrow btn-prev" id="mag-prev" aria-label="السابق">
                 <span class="arrow-shape"></span>
             </button>
@@ -322,107 +356,166 @@
             starsBox.appendChild(star);
         }
 
-        // Carousel Logic
+        // Carousel Logic — Matching story.html
         let magazines = [];
         let currentIdx = 0;
-        let navDir = 0; // -1 = backward, +1 = forward
+        let navDir = 0; 
+        const TOTAL_SLOTS = 5; 
 
         const track = document.getElementById('mag-track');
         const dotsContainer = document.getElementById('mag-dots');
+        const sliderWrapper = document.getElementById('mag-slider');
 
         async function initMagazines() {
             try {
-                // Fetch from your magazines API or use default
-                magazines = [
-                    { id: 1, cover: 'images/mag1.jpg' },
-                    { id: 2, cover: 'images/mag2.jpg' },
-                    { id: 3, cover: 'images/mag3.jpg' },
-                    { id: 4, cover: 'images/mag4.jpg' },
-                    { id: 5, cover: 'images/mag5.jpg' }
-                ];
-                currentIdx = Math.floor(magazines.length / 2);
+                const res = await fetch('/api/magazines');
+                if (!res.ok) throw new Error('Failed to fetch');
+                magazines = await res.json();
+                
+                if (magazines.length === 0) {
+                    track.innerHTML = '<div style="color: #94a3b8; font-size: 1.2rem;">لا توجد مجلات مضافة حالياً</div>';
+                    return;
+                }
+
+                currentIdx = 0;
                 renderSlider();
-            } catch (err) { console.error(err); }
+            } catch (err) { 
+                console.error(err);
+                track.innerHTML = '<div style="color: #EF4444;">حدث خطأ أثناء تحميل البيانات</div>';
+            }
+        }
+
+        function magAt(slotIndex) {
+            return magazines[slotIndex] || null;
+        }
+
+        function buildCard(mag, isActive, slotIndex, pos) {
+            const card = document.createElement('div');
+            const isSide = pos === 1 || pos === 3;
+            const isFarSide = pos === 0 || pos === 4;
+            let sizeClass = isActive ? 'active' : (isSide ? 'side' : 'far-side');
+            
+            card.className = `mag-card-container ${sizeClass}`;
+
+            if (mag && mag.cover_image) {
+                card.style.backgroundImage = `url('${mag.cover_image}')`;
+            }
+
+            if (!mag) {
+                // Placeholder — match story.html exactly
+                card.style.opacity = '0.35';
+                card.style.cursor  = 'default';
+                card.style.pointerEvents = 'none';
+                card.style.animation = 'magFadeIn 0.4s ease both';
+                return card;
+            }
+
+            card.innerHTML = `<div class="read-icon"><i class="fa-solid fa-book-open"></i></div>`;
+
+            if (isActive) {
+                const anim = navDir > 0 ? 'slideFromLeft' : navDir < 0 ? 'slideFromRight' : 'magFadeIn';
+                card.style.animation = `${anim} 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both`;
+                
+                card.addEventListener('click', () => {
+                    if (mag.pdf_file) {
+                        window.navigateTo(`magazine-detail.html?pdf=${encodeURIComponent(mag.pdf_file)}&title=${encodeURIComponent(mag.title)}`);
+                    } else {
+                        alert('هذا العدد لا يحتوي على ملف PDF حالياً');
+                    }
+                });
+            } else {
+                card.style.animation = 'magFadeIn 0.4s ease both';
+                card.addEventListener('click', () => {
+                    navDir = slotIndex > currentIdx ? 1 : -1;
+                    currentIdx = slotIndex;
+                    renderSlider();
+                });
+            }
+
+            return card;
         }
 
         function renderSlider() {
-            track.innerHTML = '';
+            track.innerHTML       = '';
             dotsContainer.innerHTML = '';
 
-            const indices = [
-                (currentIdx - 1 + magazines.length) % magazines.length,
+            const n = TOTAL_SLOTS;
+            
+            // Story logic slots: we show 5 slots (0 to 4)
+            // Indices centered on currentIdx
+            const slots = [
+                (currentIdx - 2 + n) % n,
+                (currentIdx - 1 + n) % n,
                 currentIdx,
-                (currentIdx + 1) % magazines.length,
+                (currentIdx + 1) % n,
+                (currentIdx + 2) % n
             ];
 
-            indices.forEach((mIdx, pos) => {
-                const isActive = pos === 1;
-                const card = document.createElement('div');
-                card.className = `mag-card-container ${isActive ? 'active' : 'side'}`;
-                
-                // Content (Photo block with play icon)
-                card.innerHTML = `<div class="play-icon"></div>`;
-
-                // Animation
-                if (isActive) {
-                    const anim = navDir > 0 ? 'slideFromLeft' : navDir < 0 ? 'slideFromRight' : 'magFadeIn';
-                    card.style.animation = `${anim} 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both`;
-                } else {
-                    card.style.animation = `magFadeIn 0.4s ease both`;
-                }
-
-                // Click behavior
-                if (!isActive) {
-                    card.addEventListener('click', () => {
-                        navDir = pos === 0 ? -1 : 1;
-                        currentIdx = mIdx;
-                        renderSlider();
-                    });
-                } else {
-                    card.addEventListener('click', () => {
-                        window.navigateTo('magazine-detail.html');
-                    });
-                }
-
-                track.appendChild(card);
+            slots.forEach((slotIdx, pos) => {
+                const mag = magAt(slotIdx);
+                const isActive = pos === 2;
+                track.appendChild(buildCard(mag, isActive, slotIdx, pos));
             });
 
-            // Dots
-            magazines.forEach((_, i) => {
+            // Dots - match TOTAL_SLOTS
+            for (let i = 0; i < TOTAL_SLOTS; i++) {
                 const dot = document.createElement('button');
                 dot.className = `dot ${i === currentIdx ? 'active' : ''}`;
                 dot.addEventListener('click', () => {
-                    navDir = i < currentIdx ? -1 : 1;
+                    navDir = i > currentIdx ? 1 : -1;
                     currentIdx = i;
                     renderSlider();
                 });
                 dotsContainer.appendChild(dot);
-            });
+            }
         }
 
-        document.getElementById('mag-prev').onclick = () => {
+        function movePrev() {
             navDir = -1;
-            currentIdx = (currentIdx - 1 + magazines.length) % magazines.length;
+            currentIdx = (currentIdx - 1 + TOTAL_SLOTS) % TOTAL_SLOTS;
             renderSlider();
-        };
+        }
 
-        document.getElementById('mag-next').onclick = () => {
+        function moveNext() {
             navDir = 1;
-            currentIdx = (currentIdx + 1) % magazines.length;
+            currentIdx = (currentIdx + 1) % TOTAL_SLOTS;
             renderSlider();
-        };
+        }
 
+        document.getElementById('mag-prev').onclick = movePrev;
+        document.getElementById('mag-next').onclick = moveNext;
+
+        // Keyboard nav
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') {
-                navDir = -1;
-                currentIdx = (currentIdx - 1 + magazines.length) % magazines.length;
-                renderSlider();
-            } else if (e.key === 'ArrowLeft') {
-                navDir = 1;
-                currentIdx = (currentIdx + 1) % magazines.length;
-                renderSlider();
-            }
+            if (e.key === 'ArrowRight') movePrev();
+            else if (e.key === 'ArrowLeft') moveNext();
         });
+
+        // Swipe support — EXACT COPY from story.html logic
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        track.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        track.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeThreshold = 50; 
+            const deltaX = touchEndX - touchStartX;
+
+            if (Math.abs(deltaX) > swipeThreshold) {
+                if (deltaX > 0) {
+                    movePrev(); // Swipe Right → Prev
+                } else {
+                    moveNext(); // Swipe Left → Next
+                }
+            }
+        }
 
         initMagazines();
     </script>

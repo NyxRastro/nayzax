@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | نيزك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Zain:wght@300;400;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body class="admin-body">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+        <a href="index.html" class="admin-logo">
+            <img src="images/logo.png" alt="Logo" class="nav-logo-img">
+        </a>
+
+        <div class="admin-menu">
+            <div class="admin-menu-item active" data-target="dashboard">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>الرئيسية</span>
+            </div>
+            <div class="admin-menu-item" data-target="stories">
+                <i class="fa-solid fa-headphones"></i>
+                <span>القصص المسموعة</span>
+            </div>
+            <div class="admin-menu-item" data-target="movies">
+                <i class="fa-solid fa-film"></i>
+                <span>الأفلام</span>
+            </div>
+            <div class="admin-menu-item" data-target="magazines">
+                <i class="fa-solid fa-book-open"></i>
+                <span>المجلات</span>
+            </div>
+            <div class="admin-menu-item" data-target="opinions">
+                <i class="fa-solid fa-comments"></i>
+                <span>الآراء والملاحظات</span>
+            </div>
+            <div style="flex: 1;"></div>
+            <a href="index.html" class="admin-menu-item" style="color: #EF4444; text-decoration: none;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>تسجيل خروج</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="admin-main">
+        
+        <!-- HEADER -->
+        <header class="admin-header">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="admin-hamburger" id="admin-hamburger-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h1 class="admin-page-title" id="page-title">الرئيسية</h1>
+            </div>
+            
+            <div class="admin-user">
+                <span>مرحباً، المشرف</span>
+                <img src="images/robot.jpg" alt="Admin" onerror="this.src='https://ui-avatars.com/api/?name=Admin&background=C084FC&color=fff'" />
+            </div>
+        </header>
+
+        <!-- DASHBOARD VIEW -->
+        <div class="admin-content-view active" id="view-dashboard">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-headphones"></i></div>
+                    <div class="stat-info">
+                        <h3>إجمالي القصص</h3>
+                        <div class="stat-val" id="stat-stories">—</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(236, 72, 153, 0.2); color: #EC4899;"><i class="fa-solid fa-film"></i></div>
+                    <div class="stat-info">
+                        <h3>إجمالي الأفلام</h3>
+                        <div class="stat-val" id="stat-movies">—</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(52, 211, 153, 0.2); color: #34D399;"><i class="fa-solid fa-book-open"></i></div>
+                    <div class="stat-info">
+                        <h3>المجلات</h3>
+                        <div class="stat-val" id="stat-mags">—</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(165, 98, 233, 0.2); color: #A562E9;"><i class="fa-solid fa-comments"></i></div>
+                    <div class="stat-info">
+                        <h3>الآراء</h3>
+                        <div class="stat-val" id="stat-opinions">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick links to sections -->
+            <div class="stats-grid" style="margin-top:24px;">
+                <div class="stat-card" style="cursor:pointer;" onclick="switchTab('stories')">
+                    <div class="stat-icon"><i class="fa-solid fa-plus"></i></div>
+                    <div class="stat-info"><h3>إضافة قصة</h3><div style="font-size:.85rem;color:#94a3b8;">انتقل للقصص</div></div>
+                </div>
+                <div class="stat-card" style="cursor:pointer;" onclick="switchTab('movies')">
+                    <div class="stat-icon" style="background:rgba(236,72,153,.2);color:#EC4899;"><i class="fa-solid fa-plus"></i></div>
+                    <div class="stat-info"><h3>إضافة فيلم</h3><div style="font-size:.85rem;color:#94a3b8;">انتقل للأفلام</div></div>
+                </div>
+                <div class="stat-card" style="cursor:pointer;" onclick="switchTab('magazines')">
+                    <div class="stat-icon" style="background:rgba(52,211,153,.2);color:#34D399;"><i class="fa-solid fa-plus"></i></div>
+                    <div class="stat-info"><h3>إضافة مجلة</h3><div style="font-size:.85rem;color:#94a3b8;">انتقل للمجلات</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STORIES VIEW -->
+        <div class="admin-content-view" id="view-stories">
+            <div class="admin-actions">
+                <div class="search-box">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="ابحث في القصص..." oninput="filterTable(this,'view-stories')" />
+                </div>
+                <button class="btn-primary" onclick="openModal('modal-story')">
+                    <i class="fa-solid fa-plus"></i> إضافة قصة جديدة
+                </button>
+            </div>
+
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>القصة</th>
+                            <th>المدة</th>
+                            <th>تاريخ الإضافة</th>
+                            <th>الحالة</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="5" style="text-align:center;opacity:.5;"><i class="fa-solid fa-spinner fa-spin"></i> جاري التحميل...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MOVIES VIEW -->
+        <div class="admin-content-view" id="view-movies">
+            <div class="admin-actions">
+                <div class="search-box">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="ابحث في الأفلام..." oninput="filterTable(this,'view-movies')" />
+                </div>
+                <button class="btn-primary" onclick="openModal('modal-movie')">
+                    <i class="fa-solid fa-plus"></i> إضافة فيلم جديد
+                </button>
+            </div>
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>الفيلم</th>
+                            <th>المدة</th>
+                            <th>الوصف</th>
+                            <th>الحالة</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="5" style="text-align:center;opacity:.5;"><i class="fa-solid fa-spinner fa-spin"></i> جاري التحميل...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MAGAZINES VIEW -->
+        <div class="admin-content-view" id="view-magazines">
+            <div class="admin-actions">
+                <div class="search-box">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="ابحث في المجلات..." oninput="filterTable(this,'view-magazines')" />
+                </div>
+                <button class="btn-primary" onclick="openModal('modal-magazine')">
+                    <i class="fa-solid fa-plus"></i> إضافة عدد مجلة
+                </button>
+            </div>
+            <div class="data-table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>المجلة / العدد</th>
+                            <th>تاريخ النشر</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="3" style="text-align:center;opacity:.5;"><i class="fa-solid fa-spinner fa-spin"></i> جاري التحميل...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- OPINIONS VIEW -->
+        <div class="admin-content-view" id="view-opinions">
+            <div class="admin-actions">
+                <div class="search-box">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="ابحث في الآراء..." oninput="filterTable(this,'view-opinions')" />
+                </div>
+            </div>
+            <div class="data-table-wrapper">
+                <table class="data-table" id="opinions-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 150px;">الاسم</th>
+                            <th>التعليق / الرأي</th>
+                            <th style="width: 180px;">التاريخ</th>
+                            <th style="width: 100px;">إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="4" style="text-align:center;opacity:.5;"><i class="fa-solid fa-spinner fa-spin"></i> جاري التحميل...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ===== MODALS ===== -->
+
+    <!-- STORY MODAL -->
+    <div class="modal-overlay" id="modal-story">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>إضافة قصة مسموعة جديدة</h2>
+                <button class="modal-close" onclick="closeModal('modal-story')"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-story" onsubmit="event.preventDefault(); saveStory();">
+                    <div class="admin-form-group">
+                        <label>عنوان القصة</label>
+                        <input type="text" name="title" placeholder="أدخل عنوان القصة" required />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col admin-form-group">
+                            <label>المدة (دقيقة)</label>
+                            <input type="text" name="duration" placeholder="مثال: 12:35 د" required />
+                        </div>
+                        <div class="form-col admin-form-group">
+                            <label>حالة النشر</label>
+                            <select name="status">
+                                <option value="1">منشور</option>
+                                <option value="0">مسودة</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="admin-form-group">
+                        <label>صورة الغلاف (اختياري)</label>
+                        <div class="file-upload-box">
+                            <input type="file" name="cover_image" accept="image/*" />
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <p>انقر أو اسحب الصورة هنا</p>
+                            <span>اختياري (PNG, JPG)</span>
+                        </div>
+                    </div>
+                    <div class="admin-form-group">
+                        <label>الملف الصوتي (MP3, WAV)</label>
+                        <div class="file-upload-box">
+                            <input type="file" name="audio_file" accept="audio/*" />
+                            <i class="fa-solid fa-music"></i>
+                            <p>قم برفع الملف الصوتي</p>
+                        </div>
+                    </div>
+                    <div class="admin-form-group">
+                        <label>وصف القصة (اختياري)</label>
+                        <textarea name="description" placeholder="وصف قصير..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" type="button" onclick="closeModal('modal-story')">إلغاء</button>
+                <button class="btn-primary" id="btn-save-story" onclick="document.getElementById('form-story').requestSubmit()">حفظ القصة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOVIE MODAL -->
+    <div class="modal-overlay" id="modal-movie">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>إضافة فيلم جديد</h2>
+                <button class="modal-close" onclick="closeModal('modal-movie')"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-movie" onsubmit="event.preventDefault(); saveMovie();">
+                    <div class="admin-form-group">
+                        <label>عنوان الفيلم</label>
+                        <input type="text" name="title" placeholder="أدخل عنوان الفيلم" required />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col admin-form-group">
+                            <label>المدة</label>
+                            <input type="text" name="duration" placeholder="مثال: 1 س و 20 د" required />
+                        </div>
+                        <div class="form-col admin-form-group">
+                            <label>حالة النشر</label>
+                            <select name="status">
+                                <option value="1">منشور</option>
+                                <option value="0">مسودة</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col admin-form-group">
+                            <label>صورة الغلاف (Poster)</label>
+                            <div class="file-upload-box">
+                                <input type="file" name="thumbnail" accept="image/*" />
+                                <i class="fa-solid fa-image"></i>
+                                <p>اضغط للرفع</p>
+                            </div>
+                        </div>
+                        <div class="form-col admin-form-group">
+                            <label>إعلان ترويجي (قريباً - اختياري)</label>
+                            <div class="file-upload-box">
+                                <input type="file" name="trailer_file" accept="video/*" />
+                                <i class="fa-solid fa-video"></i>
+                                <p>ارفع التريلر</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="admin-form-group">
+                        <label>وصف الفيلم</label>
+                        <textarea name="description" placeholder="أدخل ملخص قصة الفيلم..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div style="padding: 15px 30px; margin-bottom: 10px; background: rgba(192, 132, 252, 0.1); border-radius: 8px; margin: 0 30px 20px 30px; color: #D8B4FE; font-size: 0.9rem; text-align: center; border: 1px dashed rgba(192, 132, 252, 0.3);">
+                <i class="fa-solid fa-info-circle" style="margin-left: 5px;"></i>
+                <strong>ملاحظة هامة:</strong> لإضافة الستوري بورد والشخصيات الخاصة بهذا الفيلم، يُرجى حفظ الفيلم أولاً، ثم استخدام الأزرار المخصصة <i class="fa-solid fa-images" style="margin:0 3px;"></i> و <i class="fa-solid fa-users" style="margin:0 3px;"></i> بجانب الفيلم في الجدول الأيسر.
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" type="button" onclick="closeModal('modal-movie')">إلغاء</button>
+                <button class="btn-primary" id="btn-save-movie" onclick="document.getElementById('form-movie').requestSubmit()">حفظ الفيلم</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOVIE STORYBOARDS MODAL -->
+    <div class="modal-overlay" id="modal-movie-storyboards">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>إدارة الستوري بورد</h2>
+                <button class="modal-close" onclick="closeModal('modal-movie-storyboards')"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="padding-top: 5px;">
+                <div class="admin-form-group">
+                    <label>تحميل صورة جديدة</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="file" id="new-storyboard-file" accept="image/*" style="flex: 1;" />
+                        <button class="btn-primary" type="button" onclick="uploadStoryboard()">رفع</button>
+                    </div>
+                </div>
+                <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+                <div id="storyboard-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px;">
+                    <!-- dynamically filled -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" type="button" onclick="closeModal('modal-movie-storyboards')">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOVIE CHARACTERS MODAL -->
+    <div class="modal-overlay" id="modal-movie-characters">
+        <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h2>إدارة الشخصيات</h2>
+                <button class="modal-close" onclick="closeModal('modal-movie-characters')"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="padding-top: 5px;">
+                <form id="form-character" onsubmit="event.preventDefault(); addMovieCharacter();">
+                    <h3 style="margin-top:0; color:#C084FC;">إضافة شخصية جديدة</h3>
+                    <div class="form-row">
+                        <div class="form-col admin-form-group">
+                    <div class="form-row">
+                        <div class="form-col admin-form-group" style="flex:1;">
+                            <label>اسم الشخصية (للمجال الإداري)</label>
+                            <input type="text" name="name" required placeholder="أدخل اسم الشخصية..." />
+                        </div>
+                        <div class="form-col admin-form-group" style="flex:1;">
+                            <label>صورة الشخصية (تتضمن الاسم والدور)</label>
+                            <input type="file" name="image" accept="image/*" required style="width: 100%; border-radius: 8px; border: 1px dashed rgba(255,255,255,0.2); padding: 5px;" />
+                        </div>
+                    </div>
+                    <button class="btn-primary" style="margin-top: 10px; width: 100%;" type="submit">إضافة شخصية</button>
+                </form>
+                
+                <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin: 25px 0;">
+                
+                <div id="character-list" style="display: flex; flex-direction: column; gap: 15px;">
+                    <!-- dynamically filled -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAGAZINE MODAL -->
+    <div class="modal-overlay" id="modal-magazine">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>إضافة مجلة جديدة</h2>
+                <button class="modal-close" onclick="closeModal('modal-magazine')"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-magazine" onsubmit="event.preventDefault(); saveMagazine();">
+                    <div class="admin-form-group">
+                        <label>عنوان المجلة</label>
+                        <input type="text" name="title" placeholder="أدخل عنوان المجلة" required />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col admin-form-group">
+                            <label>رقم العدد (اختياري)</label>
+                            <input type="number" name="issue_number" placeholder="مثال: 05" />
+                        </div>
+                        <div class="form-col admin-form-group">
+                            <label>تاريخ الإصدار (اختياري)</label>
+                            <input type="date" name="publish_date" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col admin-form-group">
+                            <label>صورة الغلاف / الكارت (Cover)</label>
+                            <div class="file-upload-box">
+                                <input type="file" name="cover_image" accept="image/*" />
+                                <i class="fa-solid fa-image"></i>
+                                <p>اضغط للرفع</p>
+                                <span>PNG, JPG, WebP</span>
+                            </div>
+                        </div>
+                        <div class="form-col admin-form-group">
+                            <label>نسخة المجلة (PDF)</label>
+                            <div class="file-upload-box">
+                                <input type="file" name="pdf_file" accept=".pdf" required />
+                                <i class="fa-solid fa-file-pdf"></i>
+                                <p>ارفع ملف PDF</p>
+                                <span>يظهر عند الضغط على الكارت</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" type="button" onclick="closeModal('modal-magazine')">إلغاء</button>
+                <button class="btn-primary" id="btn-save-magazine" onclick="document.getElementById('form-magazine').requestSubmit()">حفظ المجلة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- OPINION MODAL -->
+    <div class="modal-overlay" id="modal-opinion">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>تفاصيل الرأي</h2>
+                <button class="modal-close" onclick="closeModal('modal-opinion')"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="padding: 25px;">
+                <div style="font-weight: 700; color: #C084FC; font-size: 1.1rem; margin-bottom: 10px;" id="opinion-modal-name">الاسم</div>
+                <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 20px;" id="opinion-modal-date">التاريخ</div>
+                <div style="line-height: 1.7; color: #E2E8F0; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere;" id="opinion-modal-message">
+                    الرسالة
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" type="button" onclick="closeModal('modal-opinion')">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Tab switching
+        function switchTab(target) {
+            const menuItems = document.querySelectorAll('.admin-menu-item[data-target]');
+            const views     = document.querySelectorAll('.admin-content-view');
+            const pageTitle = document.getElementById('page-title');
+            menuItems.forEach(i => {
+                i.classList.toggle('active', i.dataset.target === target);
+                if (i.dataset.target === target) pageTitle.textContent = i.querySelector('span').textContent;
+            });
+            views.forEach(v => v.classList.toggle('active', v.id === 'view-' + target));
+        }
+
+        document.querySelectorAll('.admin-menu-item[data-target]').forEach(item => {
+            item.addEventListener('click', () => switchTab(item.dataset.target));
+        });
+
+        // Close modals on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', e => {
+                if (e.target === overlay) overlay.classList.remove('active');
+            });
+        });
+
+        // Live search filter
+        function filterTable(input, viewId) {
+            const q    = input.value.toLowerCase();
+            const rows = document.querySelectorAll(`#${viewId} tbody tr`);
+            rows.forEach(r => {
+                r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        }
+        window.filterTable = filterTable;
+        window.switchTab   = switchTab;
+
+        // Mobile Sidebar Toggle
+        const adminHamburger = document.getElementById('admin-hamburger-btn');
+        const adminSidebar   = document.querySelector('.admin-sidebar');
+        if (adminHamburger && adminSidebar) {
+            adminHamburger.addEventListener('click', () => adminSidebar.classList.toggle('mobile-active'));
+            document.addEventListener('click', e => {
+                if (window.innerWidth <= 768 && !adminSidebar.contains(e.target) && !adminHamburger.contains(e.target)) {
+                    adminSidebar.classList.remove('mobile-active');
+                }
+            });
+        }
+    </script>
+    <script src="js/admin.js"></script>
+</body>
+</html>

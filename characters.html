@@ -65,15 +65,8 @@
         }
 
         @keyframes twinkle {
-
-            0%,
-            100% {
-                opacity: var(--op, 0.6);
-            }
-
-            50% {
-                opacity: 0.1;
-            }
+            0%, 100% { opacity: var(--op, 0.6); }
+            50% { opacity: 0.1; }
         }
 
         /* ===== CONTENT WRAPPER ===== */
@@ -89,222 +82,164 @@
             padding-top: 60px;
         }
 
-        /* ===== CAROUSEL CONTAINER (Even smaller) ===== */
-        .characters-carousel {
+        /* ===== HORIZONTAL CAROUSEL ===== */
+        .slider-wrapper {
             position: relative;
-            width: 100%;
-            max-width: 900px;
-            /* Reduced further */
-            height: 380px;
-            /* Reduced further */
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+            height: 450px;
+            user-select: none;
         }
 
-        .carousel-track {
-            position: relative;
+        .cards-track {
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 30px;
+            position: relative;
             width: 100%;
             height: 100%;
         }
 
         /* Base Card Styling */
         .char-card-container {
-            position: absolute;
-            width: 180px;
-            /* Reduced further */
-            height: 180px;
-            /* Reduced further */
-            transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            position: relative;
+            border-radius: 20px;
+            flex-shrink: 0;
             cursor: pointer;
-            z-index: 1;
-        }
-
-        .char-card-base {
-            position: absolute;
-            inset: 0;
-            border-radius: 24px;
+            overflow: hidden;
             background: linear-gradient(145deg, #1e0b4a 0%, #0c0420 100%);
             border: 1px solid rgba(139, 92, 246, 0.3);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            transition: all 0.7s ease;
-            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background-size: cover;
+            background-position: center;
         }
 
-        .char-illustration {
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            height: 160px;
-            /* Reduced further */
-            object-fit: contain;
-            transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
-            filter: grayscale(0.2) brightness(0.8);
-            pointer-events: none;
-        }
-
-        /* Description Container */
-        .char-desc {
-            position: absolute;
-            bottom: 20px;
-            width: 85%;
-            text-align: center;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            transform: translateY(10px);
-            z-index: 5;
-        }
-
-        .char-desc .char-name {
-            font-size: 1.1rem;
-            font-weight: 800;
-            margin-bottom: 3px;
-            color: #d8b4fe;
-        }
-
-        .char-desc p {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            margin: 0;
-        }
-
-        /* ====== ACTIVE STATE (CENTER) ====== */
+        /* Slots Logic (Landscape) */
         .char-card-container.active {
-            width: 260px;
-            height: 240px;
+            width: 580px;
+            height: 360px;
             z-index: 10;
-            transform: translateX(0) translateY(0);
-            cursor: default;
+            opacity: 1;
+            transform: scale(1);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(139, 92, 246, 0.3);
+            border-color: rgba(139, 92, 246, 0.6);
         }
 
-        .char-card-container.active .char-card-base {
-            background: linear-gradient(145deg, #2a0e66 0%, #110530 100%);
-            border-color: rgba(168, 85, 247, 0.6);
-            box-shadow: 0 20px 50px rgba(168, 85, 247, 0.3);
-            overflow: visible;
+        .char-card-container.side {
+            width: 240px;
+            height: 150px;
+            opacity: 0.7;
+            z-index: 5;
+            transform: scale(0.9);
+            filter: blur(0.5px);
         }
 
-        .char-card-container.active .char-illustration {
-            height: 310px;
-            bottom: 100px;
-            filter: grayscale(0) brightness(1) drop-shadow(0 15px 30px rgba(0, 0, 0, 0.8));
-            transform: translateX(-50%) scale(1.1);
-            z-index: 15;
+        .char-card-container.far-side {
+            width: 180px;
+            height: 112px;
+            opacity: 0.35;
+            z-index: 2;
+            transform: scale(0.8);
+            filter: blur(1.5px);
+        }
+
+        .char-card-container:hover {
+            opacity: 1;
+            filter: blur(0);
+            transform: translateY(-5px) scale(0.95);
+        }
+        .char-card-container.active:hover {
+            transform: translateY(-8px) scale(1.02);
+        }
+
+        /* Animated Bobbing for active */
+        .char-card-container.active {
             animation: bobIt 4s ease-in-out infinite;
         }
 
-        .char-card-container.active .char-desc {
-            opacity: 1;
-            transform: translateY(0);
-            transition-delay: 0.3s;
-        }
-
-        /* ====== SIDE STATES (RTL) ====== */
-        .char-card-container.prev {
-            transform: translateX(240px) scale(0.7);
-            opacity: 0.5;
-        }
-
-        .char-card-container.next {
-            transform: translateX(-240px) scale(0.7);
-            opacity: 0.5;
-        }
-
-        /* Hidden/Far states */
-        .char-card-container.hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: translateX(0) scale(0.5);
-        }
-
-        .char-card-container.far-prev {
-            transform: translateX(450px) scale(0.6);
-            opacity: 0.2;
-        }
-
-        .char-card-container.far-next {
-            transform: translateX(-450px) scale(0.6);
-            opacity: 0.2;
-        }
-
         @keyframes bobIt {
-
-            0%,
-            100% {
-                transform: translateX(-50%) scale(1.1) translateY(0);
-            }
-
-            50% {
-                transform: translateX(-50%) scale(1.1) translateY(-8px);
-            }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
+
+        /* Navigation Arrows (Story Style) */
+        .nav-btn {
+            position: absolute;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 100;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .arrow-shape {
+            display: block;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+
+        .btn-prev .arrow-shape {
+            border-width: 15px 0 15px 22px;
+            border-color: transparent transparent transparent #C084FC;
+        }
+
+        .btn-next .arrow-shape {
+            border-width: 15px 22px 15px 0;
+            border-color: transparent #C084FC transparent transparent;
+        }
+
+        .nav-btn:hover .arrow-shape {
+            opacity: 1;
+            filter: drop-shadow(0 0 10px #C084FC);
+        }
+
+        .btn-prev { right: 30px; }
+        .btn-next { left: 30px; }
 
         /* Pagination dots */
         .carousel-dots {
             display: flex;
-            gap: 10px;
-            margin-top: 25px;
+            gap: 12px;
+            margin-top: 30px;
         }
 
         .dot-diamond {
-            width: 7px;
-            height: 7px;
+            width: 8px;
+            height: 8px;
             background: rgba(255, 255, 255, 0.2);
             transform: rotate(45deg);
             cursor: pointer;
             transition: 0.3s;
+            border-radius: 1px;
         }
 
         .dot-diamond.active {
             background: #a855f7;
-            box-shadow: 0 0 10px #a855f7;
-            transform: rotate(45deg) scale(1.3);
+            box-shadow: 0 0 12px #a855f7;
+            transform: rotate(45deg) scale(1.4);
         }
 
-        /* Navigation Arrows */
-        .nav-btn {
-            position: absolute;
-            background: none;
-            padding: 30px;
-            border: none;
-            font-size: 2.2rem;
-            color: rgba(255, 255, 255, 0.3);
-            cursor: pointer;
-            transition: 0.3s;
-            z-index: 30;
-            user-select: none;
+        /* Mobile Tweaks */
+        @media (max-width: 768px) {
+            .content-wrapper { justify-content: flex-start; padding-top: 140px; }
+            .char-card-container.active { width: 92vw; height: 58vw; }
+            .char-card-container.side { display: none; }
+            .char-card-container.far-side { display: none; }
+            .nav-btn { display: none; }
+            .slider-wrapper { height: 280px; }
+            .carousel-dots { margin-top: 60px; }
         }
-
-        .nav-btn:hover {
-            color: #a855f7;
-            transform: scale(1.1);
-        }
-
-        .btn-prev {
-            right: 20px;
-
-        }
-
-        /* Visually right, logically Previous (Right pointing arrow) */
-        .btn-next {
-
-            left: 20px;
-        }
-
-        /* Visually left, logically Next (Left pointing arrow) */
     </style>
 </head>
 
@@ -319,14 +254,16 @@
     <app-header></app-header>
 
     <main class="content-wrapper">
-        <button class="nav-btn btn-next" id="c-next">&#10095;</button>
-        <button class="nav-btn btn-prev" id="c-prev">&#10094;</button>
-
-
-        <div class="characters-carousel">
-            <div class="carousel-track" id="carousel-track">
+        <div class="slider-wrapper">
+            <button class="nav-btn btn-next" id="c-next" aria-label="التالي">
+                <span class="arrow-shape"></span>
+            </button>
+            <div class="cards-track" id="carousel-track">
                 <!-- Data-driven injection -->
             </div>
+            <button class="nav-btn btn-prev" id="c-prev" aria-label="السابق">
+                <span class="arrow-shape"></span>
+            </button>
         </div>
 
         <div class="carousel-dots" id="carousel-dots"></div>
@@ -346,14 +283,9 @@
         }
 
         // Data
-        const chars = [
-            { name: 'إيتاشي', desc: 'شخصية غامضة وقوية تمتلك قدرات بصرية استثنائية.', img: 'images/itachi.png' },
-            { name: 'سالي', desc: 'المستكشفة الشجاعة التي تتحدى أسرار الفضاء المجهول.', img: 'images/itachi.png' },
-            { name: 'زيد', desc: 'عبقري التكنولوجيا الذي يبتكر حلولاً لمخاطر المجرة.', img: 'images/itachi.png' },
-            { name: 'نور', desc: 'الروح الهادئة التي تقود الفريق عبر العواصف النيزكية.', img: 'images/itachi.png' }
-        ];
-
-        let cur = 1;
+        let chars = [];
+        let cur = 0;
+        const TOTAL_SLOTS = 5;
 
         function render() {
             const track = document.getElementById('carousel-track');
@@ -361,30 +293,46 @@
             track.innerHTML = '';
             dots.innerHTML = '';
 
-            chars.forEach((c, i) => {
-                let state = 'hidden';
-                let dist = i - cur;
-                if (dist === 0) state = 'active';
-                else if (dist === -1) state = 'prev';
-                else if (dist === 1) state = 'next';
-                else if (dist === -2) state = 'far-prev';
-                else if (dist === 2) state = 'far-next';
+            if (chars.length === 0) {
+                track.innerHTML = '<div style="color:rgba(255,255,255,0.6); font-size:1.2rem;">لا توجد شخصيات مضافة لهذا الفيلم</div>';
+                return;
+            }
 
+            const n = chars.length;
+            // 5-slot logic (Center focus)
+            const slots = [
+                (cur - 2 + n) % n,
+                (cur - 1 + n) % n,
+                cur,
+                (cur + 1) % n,
+                (cur + 2) % n
+            ];
+
+            slots.forEach((idx, pos) => {
+                const char = chars[idx];
                 const card = document.createElement('div');
-                card.className = `char-card-container ${state}`;
-                card.onclick = () => { cur = i; render(); };
+                const isActive = pos === 2;
+                const isSide = pos === 1 || pos === 3;
+                
+                let sizeClass = isActive ? 'active' : (isSide ? 'side' : 'far-side');
+                card.className = `char-card-container ${sizeClass}`;
+                
+                if (char.image) {
+                    card.style.backgroundImage = `url('${char.image}')`;
+                }
 
-                card.innerHTML = `
-                    <div class="char-card-base">
-                        <img src="${c.img}" class="char-illustration" alt="${c.name}">
-                    </div>
-                    <div class="char-desc">
-                        <div class="char-name">${c.name}</div>
-                        <p>${c.desc}</p>
-                    </div>
-                `;
+                card.onclick = () => {
+                    if (!isActive) {
+                        cur = idx;
+                        render();
+                    }
+                };
+
                 track.appendChild(card);
+            });
 
+            // Dots
+            chars.forEach((_, i) => {
                 const d = document.createElement('div');
                 d.className = `dot-diamond ${i === cur ? 'active' : ''}`;
                 d.onclick = () => { cur = i; render(); };
@@ -392,10 +340,59 @@
             });
         }
 
-        document.getElementById('c-prev').onclick = () => { if (cur > 0) { cur--; render(); } };
-        document.getElementById('c-next').onclick = () => { if (cur < chars.length - 1) { cur++; render(); } };
+        function movePrev() {
+            if (chars.length === 0) return;
+            cur = (cur - 1 + chars.length) % chars.length;
+            render();
+        }
 
-        render();
+        function moveNext() {
+            if (chars.length === 0) return;
+            cur = (cur + 1) % chars.length;
+            render();
+        }
+
+        document.getElementById('c-prev').onclick = movePrev;
+        document.getElementById('c-next').onclick = moveNext;
+
+        // Swipe & Keys
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') movePrev();
+            if (e.key === 'ArrowLeft') moveNext();
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const track = document.getElementById('carousel-track');
+        track.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, {passive: true});
+        track.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            const diff = touchEndX - touchStartX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) movePrev();
+                else moveNext();
+            }
+        }, {passive: true});
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const movieId = urlParams.get('id');
+            if(!movieId) return;
+
+            fetch(`/api/movies/${movieId}`).then(r=>r.json()).then(m=>{
+                document.title = 'الشخصيات — ' + m.title + ' — نيزك';
+            }).catch(e=>e);
+
+            try {
+                const res = await fetch(`/api/movies/${movieId}/characters`);
+                chars = await res.json();
+                render();
+            } catch(e) {
+                console.error('Error fetching characters', e);
+                chars = [];
+                render();
+            }
+        });
     </script>
 </body>
 

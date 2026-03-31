@@ -212,8 +212,10 @@ function movieRow(m) {
         <td>${badge}</td>
         <td>
             <div class="td-actions">
-                <button class="btn-icon edit"   onclick="editMovie(${m.id})"><i class="fa-solid fa-pen"></i></button>
-                <button class="btn-icon delete" onclick="deleteMovie(${m.id})"><i class="fa-solid fa-trash"></i></button>
+                <button class="btn-icon edit"   onclick="editMovie(${m.id})" title="تعديل"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn-icon edit"   onclick="manageStoryboards(${m.id})" title="ستوري بورد" style="color:#C084FC"><i class="fa-solid fa-images"></i></button>
+                <button class="btn-icon edit"   onclick="manageCharacters(${m.id})" title="شخصيات" style="color:#C084FC"><i class="fa-solid fa-users"></i></button>
+                <button class="btn-icon delete" onclick="deleteMovie(${m.id})" title="حذف"><i class="fa-solid fa-trash"></i></button>
             </div>
         </td>
     </tr>`;
@@ -324,6 +326,137 @@ window.saveMovie   = saveMovie;
 window.editMovie   = editMovie;
 window.deleteMovie = deleteMovie;
 
+// ===== MOVIE STORYBOARDS =====
+let _currentMovieIdForSb = null;
+
+async function manageStoryboards(movieId) {
+    _currentMovieIdForSb = movieId;
+    openModal('modal-movie-storyboards');
+    loadStoryboards();
+}
+
+async function loadStoryboards() {
+    const list = document.getElementById('storyboard-list');
+    list.innerHTML = '<div style="opacity:0.6; padding:10px;">جاري التحميل...</div>';
+    try {
+        const res = await fetch(`/api/movies/${_currentMovieIdForSb}/storyboards`);
+        const sbs = await res.json();
+        if (sbs.length === 0) {
+            list.innerHTML = '<div style="opacity:0.5; padding:10px;">لا يوجد صور ستوري بورد</div>';
+            return;
+        }
+        list.innerHTML = sbs.map(sb => `
+            <div style="position:relative; border-radius:8px; overflow:hidden; background:#222;">
+                <img src="${sb.image}" style="width:100%; height:120px; object-fit:cover; display:block;">
+                <button class="btn-icon delete" style="position:absolute; top:5px; right:5px; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); margin:0;" onclick="deleteStoryboard(${sb.id})" title="حذف الصورة">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+        `).join('');
+    } catch {
+        list.innerHTML = '<div style="color:#EF4444;">خطأ في تحميل الصور</div>';
+    }
+}
+
+async function uploadStoryboard() {
+    const fileInput = document.getElementById('new-storyboard-file');
+    if (!fileInput.files.length) {
+        showToast('الرجاء اختيار صورة', 'error');
+        return;
+    }
+    const fd = new FormData();
+    fd.append('image', fileInput.files[0]);
+    try {
+        const res = await fetch(`/api/movies/${_currentMovieIdForSb}/storyboards`, {method: 'POST', body: fd});
+        if (!res.ok) throw new Error();
+        fileInput.value = '';
+        loadStoryboards();
+        showToast('تمت إضافة الصورة');
+    } catch {
+        showToast('فشل الرفع', 'error');
+    }
+}
+
+async function deleteStoryboard(sbId) {
+    if (!confirm('حذف هذه الصورة؟')) return;
+    try {
+        const res = await fetch(`/api/storyboards/${sbId}`, {method: 'DELETE'});
+        if (!res.ok) throw new Error();
+        loadStoryboards();
+    } catch {
+        showToast('فشل الحذف', 'error');
+    }
+}
+
+window.manageStoryboards = manageStoryboards;
+window.uploadStoryboard  = uploadStoryboard;
+window.deleteStoryboard  = deleteStoryboard;
+
+
+// ===== MOVIE CHARACTERS =====
+let _currentMovieIdForChar = null;
+
+async function manageCharacters(movieId) {
+    _currentMovieIdForChar = movieId;
+    openModal('modal-movie-characters');
+    document.getElementById('form-character').reset();
+    loadCharacters();
+}
+
+async function loadCharacters() {
+    const list = document.getElementById('character-list');
+    list.innerHTML = '<div style="opacity:0.6;">جاري التحميل...</div>';
+    try {
+        const res = await fetch(`/api/movies/${_currentMovieIdForChar}/characters`);
+        const chars = await res.json();
+        if (chars.length === 0) {
+            list.innerHTML = '<div style="opacity:0.5;">لا يوجد شخصيات مضافة</div>';
+            return;
+        }
+        list.innerHTML = chars.map(c => `
+            <div style="display:flex; background:rgba(255,255,255,0.05); border-radius:12px; padding:15px; gap:15px; align-items:center;">
+                <img src="${c.image}" style="width:70px; height:70px; border-radius:10px; object-fit:cover;">
+                <div style="flex:1;">
+                    <div style="font-weight:700; color:#C084FC; font-size:1.1rem;">${c.name}</div>
+                    <div style="font-size:0.85rem; color:#94a3b8; margin-top:3px;">الاسم مدمج في الصورة</div>
+                </div>
+                <button class="btn-icon delete" onclick="deleteCharacter(${c.id})" title="حذف الشخصية"><i class="fa-solid fa-trash"></i></button>
+            </div>
+        `).join('');
+    } catch {
+        list.innerHTML = '<div style="color:#EF4444;">خطأ في التحميل</div>';
+    }
+}
+
+async function addMovieCharacter() {
+    const form = document.getElementById('form-character');
+    const fd = new FormData(form);
+    try {
+        const res = await fetch(`/api/movies/${_currentMovieIdForChar}/characters`, {method: 'POST', body: fd});
+        if (!res.ok) throw new Error();
+        form.reset();
+        loadCharacters();
+        showToast('تمت إضافة الشخصية');
+    } catch {
+        showToast('فشل الإضافة', 'error');
+    }
+}
+
+async function deleteCharacter(charId) {
+    if (!confirm('حذف هذه الشخصية؟')) return;
+    try {
+        const res = await fetch(`/api/characters/${charId}`, {method: 'DELETE'});
+        if (!res.ok) throw new Error();
+        loadCharacters();
+    } catch {
+        showToast('فشل الحذف', 'error');
+    }
+}
+
+window.manageCharacters  = manageCharacters;
+window.addMovieCharacter = addMovieCharacter;
+window.deleteCharacter   = deleteCharacter;
+
 // ═══════════════════════════════════════════════════════════════
 //  MAGAZINES
 // ═══════════════════════════════════════════════════════════════
@@ -423,13 +556,13 @@ async function saveMagazine() {
         closeModal('modal-magazine');
         form.reset();
         _editingMagId = null;
-        document.querySelector('#modal-magazine .modal-header h2').textContent = 'إضافة عدد مجلة جديد';
+        document.querySelector('#modal-magazine .modal-header h2').textContent = 'إضافة مجلة جديدة';
         showToast('تمت إضافة/تحديث المجلة ✓');
         refreshStats();
     } catch(_) {
         showToast('حدث خطأ أثناء الحفظ', 'error');
     } finally {
-        btn.innerHTML = 'حفظ العدد';
+        btn.innerHTML = 'حفظ المجلة';
         btn.disabled  = false;
     }
 }
@@ -462,15 +595,20 @@ window.deleteMagazine = deleteMagazine;
 //  OPINIONS
 // ═══════════════════════════════════════════════════════════════
 
+let _allOpinions = [];
+
 function opinionRow(o) {
+    const isLong = o.message && o.message.length > 50;
+    const shortMsg = isLong ? o.message.substring(0, 50) + '...' : o.message;
     return `
     <tr data-id="${o.id}">
         <td style="font-weight:700; color:#C084FC;">${o.name || 'زائر مجهول'}</td>
-        <td style="max-width:300px; word-wrap:break-word; white-space:normal; line-height:1.5;">${o.message}</td>
+        <td style="max-width:300px; word-wrap:break-word; white-space:normal; line-height:1.5;">${shortMsg}</td>
         <td>${o.created_at ? new Date(o.created_at).toLocaleString('ar-EG') : '—'}</td>
         <td>
             <div class="td-actions">
-                <button class="btn-icon delete" onclick="deleteOpinion(${o.id})"><i class="fa-solid fa-trash"></i></button>
+                <button class="btn-icon edit" onclick="viewOpinion(${o.id})" title="عرض الرأي"><i class="fa-solid fa-eye"></i></button>
+                <button class="btn-icon delete" onclick="deleteOpinion(${o.id})" title="حذف الرأي"><i class="fa-solid fa-trash"></i></button>
             </div>
         </td>
     </tr>`;
@@ -482,13 +620,22 @@ async function loadOpinions() {
     tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;opacity:.6;"><i class="fa-solid fa-spinner fa-spin"></i> جاري التحميل...</td></tr>`;
     try {
         const res      = await fetch('/api/opinions');
-        const opinions = await res.json();
-        tbody.innerHTML = opinions.length
-            ? opinions.map(opinionRow).join('')
+        _allOpinions   = await res.json();
+        tbody.innerHTML = _allOpinions.length
+            ? _allOpinions.map(opinionRow).join('')
             : `<tr><td colspan="4" style="text-align:center;opacity:.5;">لا توجد آراء بعد</td></tr>`;
     } catch(_) {
         tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#EF4444;">خطأ في تحميل البيانات</td></tr>`;
     }
+}
+
+function viewOpinion(id) {
+    const o = _allOpinions.find(x => x.id === id);
+    if (!o) return;
+    document.getElementById('opinion-modal-name').textContent = o.name || 'زائر مجهول';
+    document.getElementById('opinion-modal-date').textContent = o.created_at ? new Date(o.created_at).toLocaleString('ar-EG') : '—';
+    document.getElementById('opinion-modal-message').textContent = o.message;
+    openModal('modal-opinion');
 }
 
 async function deleteOpinion(id) {
@@ -511,6 +658,7 @@ async function deleteOpinion(id) {
 }
 
 window.deleteOpinion = deleteOpinion;
+window.viewOpinion   = viewOpinion;
 
 // Reset edit state when opening modals for new items
 document.addEventListener('DOMContentLoaded', () => {

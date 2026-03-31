@@ -212,7 +212,8 @@
             font-size: 3rem;
             /* Reduced from 3.8 */
             font-weight: 800;
-            color: #C084FC; /* Changed from #9C71D9 to match vibrant mobile/other pages */
+            color: #C084FC;
+            /* Changed from #9C71D9 to match vibrant mobile/other pages */
             margin-bottom: 35px;
             /* Increased from 20 for more breathing room */
             text-shadow: 0 0 16px rgba(156, 113, 217, 0.4);
@@ -237,36 +238,44 @@
                 min-height: 100vh;
                 display: block;
             }
+
             .detail-container {
                 flex-direction: column !important;
                 align-items: center;
                 gap: 30px;
                 padding: 0 24px;
             }
+
             .story-card {
                 width: 260px;
                 /* Reduced height from 260 to 240 */
                 height: 240px;
                 margin-right: 0;
             }
+
             .story-card::after {
                 width: 50px;
                 height: 50px;
             }
+
             .play-icon {
                 border-width: 28px 0 28px 42px;
                 bottom: -8px;
                 right: -15px;
             }
+
             .detail-text {
                 align-items: center;
                 text-align: center;
                 max-width: 100%;
             }
+
             .detail-title {
-                font-size: 1.95rem; /* Reduced from 2.4rem per user request */
+                font-size: 1.95rem;
+                /* Reduced from 2.4rem per user request */
                 margin-bottom: 20px;
             }
+
             .detail-desc {
                 font-size: 1rem;
                 line-height: 1.6;
@@ -326,7 +335,7 @@
             z-index: 0;
             transition: background-image 0.3s ease;
         }
-        
+
         .audio-cover-img {
             position: absolute;
             inset: 0;
@@ -339,11 +348,11 @@
         .audio-modal-close {
             position: absolute;
             top: 20px;
-            right: 20px;
+            right: 5px;
             z-index: 10;
             background: none;
             border: none;
-            color: #000;
+            color: #ffffff;
             width: 40px;
             height: 40px;
             font-size: 2.2rem;
@@ -358,7 +367,7 @@
 
         .audio-modal-close:hover {
             transform: scale(1.1);
-            color: #111;
+            color: #ffffff;
             text-shadow: 0 0 15px rgba(192, 132, 252, 1), 0 0 30px rgba(192, 132, 252, 0.8);
         }
 
@@ -369,29 +378,28 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            background: linear-gradient(0deg, rgba(8,3,20,0.95) 0%, rgba(8,3,20,0.3) 100%);
+            justify-content: flex-end;
+            /* Push to bottom */
+            padding-bottom: 12px;
+            background: linear-gradient(0deg, rgba(8, 3, 20, 0.95) 0%, rgba(8, 3, 20, 0.3) 100%);
         }
 
-
-
         .audio-play-toggle {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #D89BFF, #7B4DBD);
+            width: auto;
+            height: auto;
+            background: none;
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 30px rgba(192, 132, 252, 0.5);
+            box-shadow: none;
             transition: all 0.2s ease;
+            padding: 10px;
         }
 
         .audio-play-toggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 40px rgba(192, 132, 252, 0.8);
+            transform: scale(1.15);
         }
 
         .audio-icon-shape {
@@ -399,16 +407,17 @@
             width: 0;
             height: 0;
             border-style: solid;
-            border-width: 14px 0 14px 22px;
-            border-color: transparent transparent transparent #fff;
+            border-width: 12px 0 12px 18px;
+            border-color: transparent transparent transparent #ffffff;
             margin-left: 6px;
             transition: all 0.2s ease;
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.8));
         }
 
         .audio-play-toggle.playing .audio-icon-shape {
             border-style: double;
-            border-width: 0 0 0 20px;
-            border-color: #fff;
+            border-width: 0 0 0 16px;
+            border-color: #ffffff;
             height: 24px;
             margin-left: 0;
         }
@@ -432,7 +441,7 @@
             <button class="audio-modal-close" id="audio-close" aria-label="إغلاق">&times;</button>
             <div class="audio-cover-bg" id="audio-cover-bg"></div>
             <div class="audio-cover-img" id="audio-cover-img"></div>
-            
+
             <div class="audio-controls-layer">
                 <button id="audio-play-toggle" class="audio-play-toggle" aria-label="تشغيل / إيقاف">
                     <span class="audio-icon-shape" id="audio-icon-state"></span>
@@ -486,43 +495,43 @@
 
         // ===== LOAD STORY FROM DATABASE =====
         (async function loadStory() {
-            const params  = new URLSearchParams(window.location.search);
+            const params = new URLSearchParams(window.location.search);
             const storyId = params.get('id');
 
             const titleEl = document.getElementById('detail-title');
-            const descEl  = document.getElementById('detail-desc');
-            const cardEl  = document.getElementById('detail-card');
+            const descEl = document.getElementById('detail-desc');
+            const cardEl = document.getElementById('detail-card');
             const audioEl = document.getElementById('story-audio');
-            const playEl  = document.getElementById('play-icon');
+            const playEl = document.getElementById('play-icon');
 
             // ── Fetch all stories and find ours ──
             try {
-                const res     = await fetch('/api/stories');
+                const res = await fetch('/api/stories');
                 const stories = await res.json();
-                const story   = storyId
+                const story = storyId
                     ? stories.find(s => String(s.id) === storyId)
                     : stories[0]; // fallback: first story
 
                 if (!story) {
                     titleEl.textContent = 'القصة غير موجودة';
-                    descEl.textContent  = 'لم يتم العثور على القصة المطلوبة.';
+                    descEl.textContent = 'لم يتم العثور على القصة المطلوبة.';
                     return;
                 }
 
                 // ── Populate page title & text ──
                 document.title = (story.title || 'قصة') + ' — نيزك';
                 titleEl.textContent = story.title || '';
-                descEl.textContent  = story.description
+                descEl.textContent = story.description
                     ? story.description
                     : (story.duration ? 'المدة: ' + story.duration : '');
 
                 // ── Apply cover image to card ──
                 if (story.cover_image) {
-                    cardEl.style.backgroundColor    = '#ffffff';
-                    cardEl.style.backgroundImage    = `url('${story.cover_image}')`;
-                    cardEl.style.backgroundSize     = 'contain';
+                    cardEl.style.backgroundColor = '#ffffff';
+                    cardEl.style.backgroundImage = `url('${story.cover_image}')`;
+                    cardEl.style.backgroundSize = 'contain';
                     cardEl.style.backgroundPosition = 'center';
-                    cardEl.style.backgroundRepeat   = 'no-repeat';
+                    cardEl.style.backgroundRepeat = 'no-repeat';
                 }
 
                 // ── Set up audio modal trigger ──
@@ -531,12 +540,12 @@
                         e.stopPropagation();
                         openAudioModal(story);
                     });
-                    
+
                     playEl.style.pointerEvents = 'auto';
-                    playEl.style.cursor        = 'pointer';
+                    playEl.style.cursor = 'pointer';
                 } else {
                     playEl.style.opacity = '0.35';
-                    playEl.title         = 'لا يوجد ملف صوتي';
+                    playEl.title = 'لا يوجد ملف صوتي';
                 }
 
             } catch (err) {
@@ -554,7 +563,7 @@
         const audioElement = document.getElementById('story-audio-element');
 
         function openAudioModal(story) {
-            
+
             if (story.cover_image) {
                 audioCoverBg.style.backgroundImage = `url('${story.cover_image}')`;
                 audioCoverImg.style.backgroundImage = `url('${story.cover_image}')`;

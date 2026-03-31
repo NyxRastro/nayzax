@@ -10,18 +10,26 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Zain:wght@300;400;700;800;900&display=swap"
         rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
     <style>
         /* ===== PAGE BASE ===== */
-        html,
         body {
             width: 100%;
             height: 100%;
             margin: 0;
-            overflow: hidden;
+            overflow: hidden; /* Default to hidden for desktop carousel */
             background-color: #0F0823;
             font-family: 'Cairo', sans-serif;
             color: #fff;
+        }
+
+        /* Enable scroll only on mobile */
+        @media (max-width: 768px) {
+            body { 
+                overflow-y: auto !important;
+                height: auto !important;
+            }
         }
 
         /* ===== FULL-SCREEN BG ===== */
@@ -100,8 +108,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding-top: 70px;
-            /* nav offset */
+            padding-top: 130px; /* Increased space under header */
+            box-sizing: border-box;
         }
 
         .gallery-container {
@@ -115,99 +123,241 @@
             padding: 0 40px;
         }
 
-        /* ===== GRID ===== */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 20px 24px;
-            /* row-gap col-gap */
+        /* ===== STORYBOARD VIEWER ===== */
+        .storyboard-viewer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
             width: 100%;
-            max-width: 900px;
+            max-width: 1200px;
+            position: relative;
         }
 
-        /* Individual Storyboard Card */
-        .sb-card {
-            background: linear-gradient(145deg, #CF7CFB 0%, #a640bd69 100%);
-            /* Same pink-purple from previous */
+        .image-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .main-card {
+            width: 100%;
+            max-width: 800px; /* Adjusted width */
+            aspect-ratio: 16 / 9;
+            background-color: rgba(20, 10, 45, 0.4);
+            background-size: cover; /* Photo covers the card */
+            background-repeat: no-repeat;
+            background-position: center;
             border-radius: 20px;
-            width: 100%;
-            aspect-ratio: 16 / 10;
-            /* Roughly a wide rectangular ratio */
-            box-shadow: 0 8px 24px rgba(123, 77, 255, 0.15);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
+            border: 1px solid rgba(207, 124, 251, 0.1);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            cursor: zoom-in;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
         }
 
-        .sb-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(123, 77, 255, 0.3);
+        .main-card:hover {
+            transform: scale(1.015);
+            border-color: rgba(207, 124, 251, 0.3);
         }
 
-        /* ===== ARROWS ===== */
+        /* Arrows - Triangle Shape (Story Style) */
         .nav-arrow {
-            width: 48px;
-            height: 48px;
-            background: transparent;
+            background: none;
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0;
-            transition: transform 0.2s ease;
+            padding: 20px;
+            transition: all 0.3s ease;
+            z-index: 20;
         }
 
-        .nav-arrow:hover {
-            transform: scale(1.1);
-        }
-
-        .arrow-icon {
+        .arrow-shape {
+            display: block;
             width: 0;
             height: 0;
             border-style: solid;
-            border-width: 16px 20px 16px 0;
-            /* Left pointing base */
-            border-color: transparent #8B5BA9 transparent transparent;
-            /* Muted darker purple */
-            filter: drop-shadow(0 0 8px rgba(139, 91, 169, 0.4));
+            transition: filter 0.25s ease, opacity 0.25s ease;
+            opacity: 0.6;
         }
 
-        /* Matches the visual style in the user's reference:
-           Left arrow points left, Right points right. */
-        .arrow-right .arrow-icon {
-            border-width: 16px 0 16px 20px;
-            /* Pointing right */
-            border-color: transparent transparent transparent #8B5BA9;
+        .prev .arrow-shape {
+            border-width: 12px 0 12px 18px; /* Pointing Right for RTL 'Prev' */
+            border-color: transparent transparent transparent #C084FC;
+        }
+
+        .next .arrow-shape {
+            border-width: 12px 18px 12px 0; /* Pointing Left for RTL 'Next' */
+            border-color: transparent #C084FC transparent transparent;
+        }
+
+        .nav-arrow:hover .arrow-shape {
+            opacity: 1;
+            filter: drop-shadow(0 0 10px rgba(192, 132, 252, 0.9));
+        }
+
+        .nav-arrow:active {
+            transform: scale(0.9);
+        }
+
+        /* Dots Navigation - Smaller Diamond Shape */
+        .nav-dots {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            z-index: 20;
+        }
+
+        .dot {
+            width: 8px; /* Smaller dots */
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: rotate(45deg);
+            border-radius: 1px;
+        }
+
+        .dot.active {
+            background: #C084FC;
+            transform: rotate(45deg) scale(1.4);
+            box-shadow: 0 0 12px rgba(192, 132, 252, 0.8);
+        }
+
+        /* Removed image-counter as requested */
+        .image-counter {
+            display: none;
+        }
+
+        /* Individual Storyboard Card */
+        .sb-card {
+            background: linear-gradient(145deg, rgba(207,124,251,0.2) 0%, rgba(166,64,189,0.4) 100%);
+            border-radius: 16px;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            background-size: cover;
+            background-position: center;
+            /* Removed shadow as requested */
+            transition: transform 0.3s ease, border 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sb-card:hover {
+            transform: translateY(-5px);
+            /* Removed shadow as requested */
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
-            .cards-grid {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(3, 1fr);
+            .storyboard-viewer {
+                gap: 20px;
+            }
+            .nav-arrow {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
             }
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            .storyboard-content {
+                height: auto;
+                min-height: 100vh;
+                padding-top: 150px;
+                padding-bottom: 50px;
+                display: block;
+            }
+
             .gallery-container {
-                gap: 10px;
-                padding: 0 15px;
+                padding: 0 20px;
+                max-width: 100%;
             }
 
-            .cards-grid {
-                grid-template-columns: 1fr;
-                grid-template-rows: repeat(6, 1fr);
-                gap: 16px;
-                max-height: 70vh;
-                overflow-y: auto;
-                padding-right: 10px;
+            .storyboard-viewer {
+                flex-direction: column;
+                gap: 25px;
+                align-items: center;
             }
 
-            /* Hide arrows on mobile if it scrolls vertically */
-            .nav-arrow {
-                display: none;
+            .nav-arrow, .nav-dots, .image-counter {
+                display: none !important;
             }
+
+            .image-wrapper {
+                width: 100%;
+                gap: 25px;
+            }
+
+            .main-card {
+                max-width: 100%;
+                aspect-ratio: 16 / 10;
+                border-radius: 18px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+                cursor: default !important; /* No lightbox on mobile */
+            }
+            
+            .main-card:hover {
+                transform: scale(1.02);
+            }
+        }
+
+        /* ===== LIGHTBOX MODAL ===== */
+        .lightbox-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 4, 25, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lightbox-img {
+            width: auto;
+            max-width: 90%;
+            max-height: 80vh;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            /* Consistent appearance */
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            background: none;
+            border: none;
+            color: #fff;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem; /* Balanced size */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10000;
+            text-shadow: 0 0 20px rgba(192, 132, 252, 0.8);
+        }
+        .lightbox-close:hover {
+            transform: scale(1.2) rotate(90deg);
+            color: #C084FC;
         }
     </style>
 </head>
@@ -226,34 +376,150 @@
     <!-- ===== MAIN CONTENT ===== -->
     <main class="storyboard-content">
         <div class="gallery-container">
+            <div class="storyboard-viewer">
+                <!-- Prev Arrow -->
+                <button class="nav-arrow prev" id="btn-prev" aria-label="Previous">
+                    <span class="arrow-shape"></span>
+                </button>
 
-            <!-- Right Arrow (Visually on the Right in RTL layout, points Right) -->
-            <button class="nav-arrow arrow-right" aria-label="التالي">
-                <div class="arrow-icon"></div>
-            </button>
+                <!-- Image & Dots -->
+                <div class="image-wrapper">
+                    <div class="main-card" id="main-card" title="انقر لتكبير الصورة"></div>
+                    <div class="nav-dots" id="nav-dots"></div>
+                </div>
 
-            <!-- 3x2 Grid -->
-            <div class="cards-grid">
-                <div class="sb-card"></div>
-                <div class="sb-card"></div>
-                <div class="sb-card"></div>
-
-                <div class="sb-card"></div>
-                <div class="sb-card"></div>
-                <div class="sb-card"></div>
+                <!-- Next Arrow -->
+                <button class="nav-arrow next" id="btn-next" aria-label="Next">
+                    <span class="arrow-shape"></span>
+                </button>
             </div>
-
-            <!-- Left Arrow (Visually on the Left in RTL layout, points Left) -->
-            <button class="nav-arrow arrow-left" aria-label="السابق">
-                <div class="arrow-icon"></div>
-            </button>
-
         </div>
     </main>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox-modal" id="lightbox-modal">
+        <button class="lightbox-close" id="lightbox-close"><i class="fa-solid fa-times"></i></button>
+        <img src="" class="lightbox-img" id="lightbox-img" />
+    </div>
 
     <script src="js/header.js"></script>
     <script src="js/main.js"></script>
     <script>
+        // ===== DYNAMIC STORYBOARDS =====
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const movieId = urlParams.get('id');
+            if(!movieId) return;
+            
+            let storyboards = [];
+            let currentIndex = 0;
+
+            const mainCard = document.getElementById('main-card');
+            const counter = document.getElementById('image-counter');
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-next');
+            const lbModal = document.getElementById('lightbox-modal');
+            const lbImg = document.getElementById('lightbox-img');
+            const lbClose = document.getElementById('lightbox-close');
+
+            const dotsContainer = document.getElementById('nav-dots');
+
+            function updateGallery() {
+                if (storyboards.length === 0) return;
+                
+                const current = storyboards[currentIndex];
+                mainCard.style.backgroundImage = `url('${current.image}')`;
+                if(counter) counter.textContent = `${currentIndex + 1} / ${storyboards.length}`;
+
+                // Update dots
+                document.querySelectorAll('.dot').forEach((dot, idx) => {
+                    dot.classList.toggle('active', idx === currentIndex);
+                });
+            }
+
+            function createDots() {
+                dotsContainer.innerHTML = '';
+                storyboards.forEach((_, idx) => {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    if (idx === 0) dot.classList.add('active');
+                    dot.onclick = () => {
+                        currentIndex = idx;
+                        updateGallery();
+                    };
+                    dotsContainer.appendChild(dot);
+                });
+            }
+
+            function renderMobileStack() {
+                const viewer = document.querySelector('.storyboard-viewer');
+                viewer.innerHTML = ''; // Clear viewer
+                
+                storyboards.forEach(sb => {
+                    const card = document.createElement('div');
+                    card.className = 'main-card';
+                    card.style.backgroundImage = `url('${sb.image}')`;
+                    // Lightbox disabled for mobile as requested
+                    viewer.appendChild(card);
+                });
+            }
+
+            // Set title optionally
+            fetch(`/api/movies/${movieId}`).then(r=>r.json()).then(m=>{
+                document.title = 'ستوري بورد — ' + m.title + ' — نيزك';
+            }).catch(e=>e);
+
+            try {
+                const res = await fetch(`/api/movies/${movieId}/storyboards`);
+                storyboards = await res.json();
+                
+                if(storyboards.length === 0) {
+                    document.querySelector('.storyboard-viewer').innerHTML = 
+                        '<div style="text-align:center; font-size:1.2rem; opacity:0.6;">لا توجد صور ستوري بورد مضافة لهذا الفيلم</div>';
+                    return;
+                }
+
+                // Check for mobile stack view
+                if (window.innerWidth <= 768) {
+                    renderMobileStack();
+                } else {
+                    createDots();
+                    updateGallery();
+
+                    // Navigation logic
+                    btnNext.onclick = () => {
+                        currentIndex = (currentIndex + 1) % storyboards.length;
+                        updateGallery();
+                    };
+
+                    btnPrev.onclick = () => {
+                        currentIndex = (currentIndex - 1 + storyboards.length) % storyboards.length;
+                        updateGallery();
+                    };
+
+                    // Keyboard support
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'ArrowLeft') btnNext.click();
+                        if (e.key === 'ArrowRight') btnPrev.click();
+                    });
+
+                    // Lightbox
+                    mainCard.onclick = () => {
+                        lbImg.src = storyboards[currentIndex].image;
+                        lbModal.classList.add('active');
+                    };
+                }
+
+                lbClose.onclick = () => lbModal.classList.remove('active');
+                lbModal.onclick = (e) => {
+                    if(e.target === lbModal) lbModal.classList.remove('active');
+                };
+
+            } catch(e) {
+                console.error(e);
+            }
+        });
+
         // ===== STAR PARTICLES =====
         const starsLayer = document.getElementById('story-stars');
         for (let i = 0; i < 100; i++) {

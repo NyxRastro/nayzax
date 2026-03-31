@@ -14,7 +14,7 @@ class AppHeader extends HTMLElement {
             </ul>
         </div>
         <div class="navbar-left">
-            <a href="feedback.html" class="nav-opinions-btn">ارائكم</a>
+            <a href="feedback.html" class="nav-opinions-btn">اراؤكم</a>
             <a href="subscribe.html" class="btn-login">تسجيل دخول</a>
             <button class="nav-hamburger" id="hamburger-btn">
                 <span></span><span></span><span></span>
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname;
     
     // Only exclude admin panel
-    const isExcluded = path.endsWith('admin.html');
+    const isExcluded = path.endsWith('admin-panel-x9f2k.html');
     
     // Check if stars are already hardcoded (like in about, vision, mission, contact)
     const alreadyHasStars = document.querySelector('.shooting-star');

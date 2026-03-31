@@ -10,6 +10,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Zain:wght@300;400;700;800;900&display=swap"
         rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
     <style>
         /* ===== PAGE BASE ===== */
@@ -101,7 +102,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding-top: 80px;
+            padding-top: 110px; /* Increased desktop space */
             padding-bottom: 40px;
             box-sizing: border-box;
         }
@@ -121,7 +122,7 @@
         /* ===== WIDE HERO CARD ===== */
         .trailer-card {
             position: relative;
-            background: linear-gradient(145deg, #CF7CFB 0%, #9051C4 100%);
+            background: rgba(123, 77, 255, 0.1); 
             border-radius: 24px;
             width: 100%;
             height: 220px;
@@ -129,6 +130,26 @@
             /* subtle float */
             animation: float 6s ease-in-out infinite;
             cursor: pointer;
+            /* Removed overflow hidden to prevent clipping the play icon */
+        }
+
+        .trailer-card.disabled {
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .trailer-card.disabled::before {
+            content: 'قريباً';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #8B4513; /* Brown color */
+            z-index: 5;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
         @keyframes float {
@@ -143,41 +164,9 @@
             }
         }
 
-        /* Folded bottom-right corner */
-        .trailer-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0px;
-            right: 0px;
-            width: 80px;
-            height: 80px;
-            background: #170c35ed;
-            border-top-left-radius: 20px;
-            box-shadow: -10px -10px 20px rgba(123, 77, 255, 0.2);
-        }
 
-        /* Big play icon */
-        .play-icon {
-            position: absolute;
-            bottom: -6px;
-            right: -16px;
-            z-index: 10;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 36px 0 36px 48px;
-            /* point right */
-            border-color: transparent transparent transparent #D98BFF;
-            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
-            transition: transform 0.25s ease, filter 0.25s ease;
-            transform-origin: center;
-        }
 
-        .trailer-card:hover .play-icon {
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 20px rgba(217, 139, 255, 0.8));
-            border-color: transparent transparent transparent #F0C4FF;
-        }
+
 
         /* ===== TEXT BLOCK (Below Card) ===== */
         .trailer-text {
@@ -231,14 +220,15 @@
 
         @media (max-width: 600px) {
             html, body {
-                overflow: hidden;
-                height: 100%;
+                overflow-y: auto; /* Allow scrolling */
+                height: auto;
             }
 
             .trailer-content {
-                height: 100vh;
-                padding-top: 0;
-                justify-content: center;
+                min-height: 100vh;
+                padding-top: 150px; /* Even more space for mobile header */
+                padding-bottom: 40px;
+                justify-content: flex-start;
             }
 
             .trailer-container {
@@ -247,20 +237,13 @@
             }
 
             .trailer-card {
-                height: 180px;
+                height: 140px; /* Smaller card */
                 border-radius: 18px;
             }
 
-            .trailer-card::after {
-                width: 60px;
-                height: 60px;
-            }
 
-            .play-icon {
-                border-width: 24px 0 24px 32px;
-                right: -10px;
-                bottom: -4px;
-            }
+
+
 
             .trailer-title {
                 font-size: 1.6rem;
@@ -268,19 +251,72 @@
             }
 
             .trailer-desc {
-                font-size: 0.9rem;
+                font-size: 0.95rem;
                 text-align: center;
                 line-height: 1.6;
-                display: -webkit-box;
-                -webkit-line-clamp: 6;
-                line-clamp: 6;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
+                display: block; /* Show full text */
+                overflow: visible;
             }
 
             .nav-links {
                 display: none;
             }
+        }
+
+        /* Video Modal Styles */
+        .video-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 4, 25, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .video-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .video-wrapper {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .video-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 10001;
+            transition: all 0.2s ease;
+        }
+
+        .video-close:hover {
+            transform: scale(1.1);
+            color: #D98BFF;
         }
     </style>
 </head>
@@ -301,29 +337,85 @@
         <div class="trailer-container">
 
             <!-- Wide Card Setup -->
-            <div class="trailer-card">
-                <div class="play-icon"></div>
+            <div class="trailer-card" id="trailer-card" style="background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center;">
             </div>
 
             <!-- Text Content -->
             <div class="trailer-text">
-                <h1 class="trailer-title">لسان اليمن (الهمداني)</h1>
-                <p class="trailer-desc">
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
-                    laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation
-                    ullamcorpes suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure
-                    dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla
-                    facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
-                    delenit augue duis dolore te feugait nulla facilisi.
+                <h1 class="trailer-title" id="dynamic-title">...</h1>
+                <p class="trailer-desc" id="dynamic-desc">
+                    <!-- description will load here -->
                 </p>
             </div>
 
         </div>
     </main>
 
+    <!-- ===== VIDEO MODAL (Bigger Window) ===== -->
+    <div class="video-modal" id="video-modal">
+        <button class="video-close" id="video-close"><i class="fa-solid fa-times"></i></button>
+        <div class="video-wrapper">
+            <video id="trailer-video-player" controls>
+                <source src="" type="video/mp4" id="trailer-video-source">
+                متصفحك لا يدعم تشغيل الفيديو.
+            </video>
+        </div>
+    </div>
+
     <script src="js/header.js"></script>
     <script src="js/main.js"></script>
     <script>
+        // ===== DYNAMIC MOVIE LOGIC =====
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const movieId = urlParams.get('id');
+            if(!movieId) return;
+
+            try {
+                const res = await fetch(`/api/movies/${movieId}`);
+                if(!res.ok) throw new Error();
+                const movie = await res.json();
+                
+                document.getElementById('dynamic-title').textContent = movie.title;
+                document.title = 'تريلر — ' + movie.title + ' — نيزك';
+                
+                if (movie.description) {
+                    document.getElementById('dynamic-desc').textContent = movie.description;
+                }
+                
+                if(movie.thumbnail) {
+                    document.getElementById('trailer-card').style.backgroundImage = `url('${movie.thumbnail}')`;
+                }
+
+                // Setup Video Modal
+                const videoModal = document.getElementById('video-modal');
+                const videoPlayer = document.getElementById('trailer-video-player');
+                const videoSource = document.getElementById('trailer-video-source');
+                const closeBtn = document.getElementById('video-close');
+                const triggerCard = document.getElementById('trailer-card');
+
+                if(movie.trailer_file) {
+                    videoSource.src = movie.trailer_file;
+                    videoPlayer.load();
+
+                    triggerCard.onclick = () => {
+                        videoModal.classList.add('active');
+                        videoPlayer.play();
+                    };
+                } else {
+                    triggerCard.classList.add('disabled');
+                }
+
+                closeBtn.onclick = () => {
+                    videoModal.classList.remove('active');
+                    videoPlayer.pause();
+                };
+
+            } catch (err) {
+                console.error('Error loading movie trailer:', err);
+            }
+        });
+
         // ===== STAR PARTICLES =====
         const starsLayer = document.getElementById('story-stars');
         for (let i = 0; i < 100; i++) {
@@ -344,5 +436,4 @@
         }
     </script>
 </body>
-
 </html>

@@ -10,32 +10,42 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Zain:wght@300;400;700;800;900&display=swap"
         rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
     <style>
         /* ===== PAGE BASE ===== */
         html,
         body {
             width: 100%;
-            height: 100%;
+            min-height: 100%;
+            height: auto;
             margin: 0;
             overflow-y: auto;
             overflow-x: hidden;
         }
+        
+        .shooting-star-global { 
+            z-index: 5 !important;
+        }
 
         body {
-            background-color: #0F0823;
+            background: transparent !important;
             font-family: 'Cairo', sans-serif;
             color: #fff;
         }
 
+        html {
+            background: transparent !important;
+        }
+
         /* ===== FULL-SCREEN BG ===== */
-        .story-page {
+        .page-bg-container {
             position: fixed;
             inset: 0;
             z-index: 0;
         }
 
-        .story-bg {
+        .page-bg {
             position: absolute;
             inset: 0;
             background-image: url('images/nebula_bg.jpg');
@@ -44,55 +54,35 @@
             z-index: 0;
         }
 
-        .story-bg::after {
+        .page-bg::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(160deg,
-                    rgba(10, 4, 25, 0.93) 0%,
-                    rgba(15, 7, 38, 0.88) 40%,
-                    rgba(8, 3, 20, 0.95) 100%);
+            background: 
+                radial-gradient(900px 420px at 50% 46%, rgba(192, 132, 252, 0.12), transparent 65%),
+                linear-gradient(160deg,
+                    rgba(10, 4, 25, 0.94) 0%,
+                    rgba(15, 7, 38, 0.90) 40%,
+                    rgba(8, 3, 20, 0.96) 100%);
         }
 
-        /* Animated stars overlay */
-        .story-stars {
+        .stars-overlay {
             position: absolute;
             inset: 0;
             z-index: 1;
             pointer-events: none;
         }
 
-        .s-star {
+        .star {
             position: absolute;
             background: #fff;
             border-radius: 50%;
-            animation: sTwinkle var(--dur, 3s) ease-in-out infinite;
+            animation: twinkle var(--dur, 3s) ease-in-out infinite;
         }
 
-        @keyframes sTwinkle {
-
-            0%,
-            100% {
-                opacity: var(--op, 0.6);
-            }
-
-            50% {
-                opacity: 0.1;
-            }
-        }
-
-        /* Subtle center glow */
-        .story-nebula-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 700px;
-            height: 400px;
-            background: radial-gradient(ellipse, rgba(201, 156, 246, 0.05) 0%, transparent 50%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1;
+        @keyframes twinkle {
+            0%, 100% { opacity: var(--op, 0.6); }
+            50% { opacity: 0.12; }
         }
 
         /* ===== CONTENT WRAPPER ===== */
@@ -100,11 +90,13 @@
             position: relative;
             z-index: 10;
             width: 100%;
-            height: 100%;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding-top: 86px;
+            padding-top: 150px;
+            padding-bottom: 50px;
+            box-sizing: border-box;
             /* offset for nav */
         }
 
@@ -132,8 +124,8 @@
             background: linear-gradient(135deg, #D89BFF 0%, #9B67D7 55%, #7B4DBD 100%);
             /* Lighter pink to purple */
             border-radius: 28px;
-            width: 380px;
-            height: 380px;
+            width: 240px;
+            height: 360px;
             box-shadow: 0 10px 40px rgba(123, 77, 255, 0.2);
             /* subtle float */
             animation: float 6s ease-in-out infinite;
@@ -151,17 +143,7 @@
             }
         }
 
-        /* Folded bottom-right corner */
-        .film-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0px;
-            right: 0px;
-            width: 80px;
-            height: 80px;
-            background: #281851f0;
-            border-top-left-radius: 24px;
-        }
+
 
         /* Huge play icon extending over the fold */
         .play-icon {
@@ -228,8 +210,17 @@
             transition: transform 0.2s ease;
         }
 
-        .film-menu-item:hover {
+        .film-menu-item:hover:not(.disabled) {
             transform: translateX(-10px);
+        }
+
+        .film-menu-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .film-menu-item.disabled .film-menu-text {
+            color: #94a3b8;
         }
 
         .film-menu-text {
@@ -285,8 +276,8 @@
         /* ===== MOBILE — side by side, no scroll ===== */
         @media (max-width: 600px) {
             html, body {
-                overflow: hidden;
-                height: 100%;
+                overflow-y: auto;
+                height: auto;
             }
 
             .detail-content {
@@ -302,9 +293,10 @@
                 flex-direction: row;
                 align-items: center;
                 justify-content: center;
-                gap: 28px;
+                gap: 32px;
                 padding: 0 20px;
                 width: 100%;
+                margin-top: -60px; /* Shift content UP */
             }
 
             /* Card on the left */
@@ -317,8 +309,8 @@
             }
 
             .film-card {
-                width: 120px;
-                height: 120px;
+                width: 155px; /* Bigger card */
+                height: 230px;
                 animation: none;
                 border-radius: 18px;
                 box-shadow: 0 6px 24px rgba(123, 77, 255, 0.4);
@@ -330,13 +322,13 @@
             }
 
             .play-icon {
-                border-width: 14px 0 14px 20px;
-                bottom: -3px;
-                right: -5px;
+                border-width: 18px 0 18px 26px; /* Bigger play icon */
+                bottom: -5px;
+                right: -8px;
             }
 
             .film-title {
-                font-size: 0.85rem;
+                font-size: 1.1rem; /* Bigger title */
                 color: #D98BFF;
                 text-align: center;
             }
@@ -350,21 +342,21 @@
 
             .film-menu-list {
                 align-items: flex-start;
-                gap: 20px;
+                gap: 11px; /* Even shorter gap */
                 width: 100%;
             }
 
             .film-menu-item {
-                gap: 10px;
+                gap: 7px;
                 width: 100%;
             }
 
-            .film-menu-item:hover {
+            .film-menu-item:hover:not(.disabled) {
                 transform: translateX(-6px);
             }
 
             .film-menu-text {
-                font-size: 1.15rem;
+                font-size: 1.15rem; /* Even "shorter" (smaller) font size */
                 font-weight: 700;
             }
 
@@ -374,16 +366,94 @@
                 flex-shrink: 0;
             }
         }
+
+        /* ===== LIGHTBOX MODAL ===== */
+        .lightbox-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(8, 4, 20, 0.96);
+            backdrop-filter: blur(12px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .lightbox-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lightbox-img {
+            max-width: 85%;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .lightbox-modal.active .lightbox-img {
+            transform: scale(1);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 40px;
+            left: 40px; /* Moved to left for better visibility in RTL */
+            background: #fff;
+            border: none;
+            color: #000;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10001;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .lightbox-close:hover {
+            transform: scale(1.1) rotate(90deg);
+            background: #D98BFF;
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .lightbox-img {
+                max-width: 95%;
+                max-height: 70vh;
+            }
+            .lightbox-close {
+                top: 20px;
+                left: 20px;
+                width: 40px;
+                height: 40px;
+                font-size: 1.4rem;
+            }
+        }
     </style>
 </head>
 
 <body>
 
     <!-- ===== BACKGROUND ===== -->
-    <div class="story-page">
-        <div class="story-bg"></div>
-        <div class="story-nebula-glow"></div>
-        <div class="story-stars" id="story-stars"></div>
+    <div class="page-bg-container">
+        <div class="page-bg"></div>
+        <div class="stars-overlay" id="stars-container"></div>
     </div>
 
     <app-header></app-header>
@@ -395,19 +465,19 @@
             <!-- Left visually (Text List) -->
             <div class="right-side">
                 <ul class="film-menu-list">
-                    <li class="film-menu-item">
+                    <li class="film-menu-item disabled" id="nav-watch" title="قريباً">
                         <div class="diamond-bullet"></div>
                         <span class="film-menu-text">مشاهدة الفيلم</span>
                     </li>
-                    <li class="film-menu-item" onclick="window.location.href='film-trailer.html'">
+                    <li class="film-menu-item" id="nav-trailer">
                         <div class="diamond-bullet"></div>
                         <span class="film-menu-text">التريلر</span>
                     </li>
-                    <li class="film-menu-item" onclick="window.location.href='film-storyboard.html'">
+                    <li class="film-menu-item" id="nav-storyboard">
                         <div class="diamond-bullet"></div>
                         <span class="film-menu-text">ستوري بورد</span>
                     </li>
-                    <li class="film-menu-item" onclick="window.location.href='characters.html'">
+                    <li class="film-menu-item" id="nav-characters">
                         <div class=" diamond-bullet">
                         </div>
                         <span class="film-menu-text">الشخصيات</span>
@@ -420,31 +490,89 @@
                  By screenshot:
                  [Menu List]   ...   [Square Card w/ Title] -->
             <div class="left-side">
-                <div class="film-card">
+                <div class="film-card" id="dynamic-poster" style="background-size: cover; background-position: center; cursor: zoom-in;" title="اضغط لتكبير الصورة">
                     <div class="play-icon"></div>
                 </div>
-                <h2 class="film-title">لسان اليمن (الهمداني)</h2>
+                <h2 class="film-title" id="dynamic-title">...</h2>
             </div>
 
         </div>
     </main>
 
+    <!-- LIGHTBOX -->
+    <div class="lightbox-modal" id="lightbox-modal">
+        <button class="lightbox-close" id="lightbox-close" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <img src="" class="lightbox-img" id="lightbox-img" alt="Film Poster" />
+    </div>
+
     <script src="js/header.js"></script>
     <script src="js/main.js"></script>
     <script>
+        // ===== LOAD DYNAMIC MOVIE DATA =====
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const movieId = urlParams.get('id');
+            if(!movieId) {
+                // If no ID is provided, you could redirect or show an error
+                // window.location.href = 'index.html';
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/movies/${movieId}`);
+                if(!res.ok) throw new Error();
+                const movie = await res.json();
+                
+                document.getElementById('dynamic-title').textContent = movie.title;
+                document.title = movie.title + ' — فيلم — نيزك';
+                
+                if(movie.thumbnail) {
+                    document.getElementById('dynamic-poster').style.backgroundImage = `url('${movie.thumbnail}')`;
+                }
+
+                // Setup Navigation Links
+                document.getElementById('nav-trailer').onclick    = () => window.location.href = `film-trailer.html?id=${movieId}`;
+                document.getElementById('nav-storyboard').onclick = () => window.location.href = `film-storyboard.html?id=${movieId}`;
+                document.getElementById('nav-characters').onclick = () => window.location.href = `characters.html?id=${movieId}`;
+                
+                // Lightbox Logic
+                const lbModal = document.getElementById('lightbox-modal');
+                const lbImg = document.getElementById('lightbox-img');
+                const lbClose = document.getElementById('lightbox-close');
+                const poster = document.getElementById('dynamic-poster');
+
+                poster.onclick = () => {
+                    const bgUrl = poster.style.backgroundImage;
+                    const url = bgUrl.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+                    lbImg.src = url;
+                    lbModal.classList.add('active');
+                };
+
+                lbClose.onclick = () => lbModal.classList.remove('active');
+                lbModal.onclick = (e) => {
+                    if (e.target === lbModal) lbModal.classList.remove('active');
+                };
+                
+            } catch (err) {
+                console.error('Error loading movie:', err);
+            }
+        });
+
         // ===== STAR PARTICLES =====
-        const starsLayer = document.getElementById('story-stars');
-        for (let i = 0; i < 100; i++) {
+        const starsLayer = document.getElementById('stars-container');
+        for (let i = 0; i < 110; i++) {
             const s = document.createElement('div');
-            s.className = 's-star';
-            const size = 1 + Math.random() * 2.5;
+            s.className = 'star';
+            const size = 1 + Math.random() * 2.4;
             s.style.cssText = `
                 left: ${Math.random() * 100}%;
                 top: ${Math.random() * 100}%;
                 width: ${size}px;
                 height: ${size}px;
                 --dur: ${2 + Math.random() * 5}s;
-                --op: ${0.2 + Math.random() * 0.7};
+                --op: ${0.18 + Math.random() * 0.65};
                 opacity: var(--op);
                 animation-delay: ${Math.random() * 5}s;
             `;

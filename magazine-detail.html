@@ -4,182 +4,278 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>تفاصيل المجلة — نيزك</title>
+    <title>قارئ نيزك | نيزك</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Zain:wght@300;400;700;800;900&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Zain:wght@300;400;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
     <style>
         /* ===== PAGE BASE ===== */
-        html,
-        body {
+        html, body {
             width: 100%;
             height: 100%;
             margin: 0;
-            overflow-y: auto;
-            overflow-x: hidden;
+            overflow: hidden;
             background-color: #0F0823;
             font-family: 'Cairo', sans-serif;
             color: #fff;
         }
 
-        /* ===== FULL-SCREEN BG ===== */
-        .page-bg-container {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-        }
-
-        .page-bg {
-            position: absolute;
-            inset: 0;
-            background-image: url('images/nebula_bg.jpg');
-            background-size: cover;
-            background-position: center center;
-            opacity: 0.6;
-            z-index: 0;
-        }
-
-        .page-bg::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(16, 8, 40, 0.4) 0%, rgba(10, 4, 25, 0.95) 100%);
-        }
-
-        .stars-overlay {
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .star {
-            position: absolute;
-            background: #fff;
-            border-radius: 50%;
-            animation: twinkle var(--dur, 3s) ease-in-out infinite;
-        }
-
-        @keyframes twinkle {
-
-            0%,
-            100% {
-                opacity: var(--op, 0.6);
-            }
-
-            50% {
-                opacity: 0.1;
-            }
-        }
-
-        /* ===== CONTENT WRAPPER ===== */
-        .content-wrapper {
+        /* ===== READER LAYOUT ===== */
+        .reader-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
             position: relative;
             z-index: 10;
-            width: 100%;
-            height: 100vh;
+        }
+
+        /* Header Bar */
+        .reader-header {
+            height: 70px;
+            background: rgba(15, 8, 35, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(192, 132, 252, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #C084FC;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(192, 132, 252, 0.3);
+            padding: 8px 18px;
+            border-radius: 12px;
+            background: rgba(192, 132, 252, 0.05);
+        }
+
+        .back-btn:hover {
+            background: rgba(192, 132, 252, 0.15);
+            transform: translateX(4px); /* RTL: moves left */
+            box-shadow: 0 0 15px rgba(192, 132, 252, 0.2);
+        }
+        
+        [dir="rtl"] .back-btn:hover { transform: translateX(4px); }
+        [dir="ltr"] .back-btn:hover { transform: translateX(-4px); }
+
+        .magazine-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(192, 132, 252, 0.4);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 40%;
+            text-align: center;
+        }
+
+        .reader-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding-top: 60px;
+            cursor: pointer;
+            transition: all 0.25s ease;
         }
 
-        /* ===== DETAIL CARD ===== */
-        .detail-card-frame {
+        .action-btn:hover {
+            background: rgba(192, 132, 252, 0.2);
+            border-color: #C084FC;
+            color: #C084FC;
+        }
+
+        /* PDF Viewer Area */
+        .pdf-viewer-wrap {
+            flex: 1;
+            width: 100%;
+            background: #1a152e;
             position: relative;
-            width: 90%;
-            max-width: 950px;
-            aspect-ratio: 16 / 9;
-            background: linear-gradient(135deg, #DF9BFF 0%, #4b2169 100%);
-            border-radius: 45px;
-            padding: 24px;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
-            display: flex;
-            gap: 20px;
-            animation: cardScaleIn 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow: hidden;
         }
 
-        @keyframes cardScaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9) translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        /* Internal content blocks */
-        .internal-grid {
+        #pdf-frame {
             width: 100%;
             height: 100%;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1.5fr;
-            gap: 20px;
+            border: none;
+            filter: grayscale(0.1); /* Subtle premium effect */
         }
 
-        .content-block {
-            background: #0B051E;
-            border-radius: 35px;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        /* Loading UI */
+        .reader-loader {
+            position: absolute;
+            inset: 0;
+            background: #0F0823;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            transition: opacity 0.6s ease, visibility 0.6s;
         }
 
-        .block-large {
-            grid-row: span 2;
+        .loader-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(192, 132, 252, 0.1);
+            border-top: 4px solid #C084FC;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .loader-text {
+            color: #C084FC;
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .magazine-title {
+                display: none;
+            }
+            .reader-header {
+                padding: 0 15px;
+            }
+            .reader-actions { gap: 8px; }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="page-bg-container">
-        <div class="page-bg"></div>
-        <div class="stars-overlay" id="stars-container"></div>
-    </div>
-
-    <!-- NAVBAR (Shared) -->
-    <app-header></app-header>
-
-    <main class="content-wrapper">
-
-        <section class="detail-card-frame">
-            <div class="internal-grid">
-                <div class="content-block block-large"></div>
-                <div class="content-block "></div>
-                <div class="content-block"></div>
+    <div class="reader-container">
+        <!-- HEADER -->
+        <header class="reader-header">
+            <div class="back-btn" id="btn-back">
+                <i class="fa-solid fa-arrow-right"></i>
+                <span>العودة للمجلة</span>
             </div>
 
+            <h1 class="magazine-title" id="pdf-title">جاري تحميل العدد...</h1>
 
+            <div class="reader-actions">
+                <button class="action-btn" title="كامل الشاشة" onclick="toggleFullScreen()">
+                    <i class="fa-solid fa-expand"></i>
+                </button>
+                <button class="action-btn" title="تحميل الملف" id="btn-download">
+                    <i class="fa-solid fa-download"></i>
+                </button>
+            </div>
+        </header>
 
-
-        </section>
-    </main>
+        <!-- VIEWER -->
+        <div class="pdf-viewer-wrap">
+            <div class="reader-loader" id="loader">
+                <div class="loader-spinner"></div>
+                <div class="loader-text">جاري تحضير العدد...</div>
+            </div>
+            <iframe id="pdf-frame" src="" title="PDF Viewer"></iframe>
+        </div>
+    </div>
 
     <script src="js/header.js"></script>
-    <script src="js/main.js"></script>
     <script>
-        // Stars background
-        const starsBox = document.getElementById('stars-container');
-        for (let i = 0; i < 80; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            const size = 1 + Math.random() * 2;
-            star.style.cssText = `
-                left: ${Math.random() * 100}%;
-                top: ${Math.random() * 100}%;
-                width: ${size}px;
-                height: ${size}px;
-                --dur: ${2 + Math.random() * 4}s;
-                --op: ${0.4 + Math.random() * 0.5};
-            `;
-            starsBox.appendChild(star);
+        // Parse URL params
+        const params = new URLSearchParams(window.location.search);
+        const pdfUrl = params.get('pdf');
+        const pdfTitle = params.get('title');
+
+        const frame = document.getElementById('pdf-frame');
+        const titleEl = document.getElementById('pdf-title');
+        const loader = document.getElementById('loader');
+        const backBtn = document.getElementById('btn-back');
+        const downloadBtn = document.getElementById('btn-download');
+
+        if (pdfTitle) titleEl.textContent = decodeURIComponent(pdfTitle);
+
+        if (pdfUrl) {
+            // Use the PDF url directly, browsers handled it well
+            // We append #toolbar=1 to show controls or #toolbar=0 to hide
+            const cleanUrl = decodeURIComponent(pdfUrl);
+            frame.src = cleanUrl + "#toolbar=1";
+            
+            downloadBtn.onclick = () => {
+                const link = document.createElement('a');
+                link.href = cleanUrl;
+                link.download = pdfTitle ? pdfTitle + ".pdf" : "magazine.pdf";
+                link.click();
+            };
+
+            frame.addEventListener('load', () => {
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    loader.style.visibility = 'hidden';
+                }, 800);
+            });
+        } else {
+            titleEl.textContent = "خطأ: الملف غير موجود";
+            loader.innerHTML = `<div style="color:#EF4444; font-weight:700;">تعذّر العثور على رابط الملف</div>`;
         }
+
+        // Return logic
+        backBtn.onclick = () => {
+            if (window.navigateTo) {
+                window.navigateTo('magazine.html');
+            } else {
+                window.location.href = 'magazine.html';
+            }
+        };
+
+        // Fullscreen toggle
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Handle escape to close fullscreen logic if needed
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                // If we want custom behavior
+            }
+        });
+
     </script>
 </body>
 
