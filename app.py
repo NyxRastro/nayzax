@@ -117,7 +117,9 @@ def require_admin():
     if request.path == ADMIN_URL_PATH:
         needs_protection = True
     elif request.path.startswith('/api/') and request.method in ['POST', 'PUT', 'DELETE']:
-        needs_protection = True
+        # Exempt public feedback submission
+        if not (request.path == '/api/opinions' and request.method == 'POST'):
+            needs_protection = True
         
     if needs_protection:
         auth = request.authorization

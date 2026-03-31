@@ -421,6 +421,64 @@
             height: 24px;
             margin-left: 0;
         }
+
+        /* ===== PROGRESS BAR ===== */
+        .audio-progress-container {
+            width: calc(80% - 2px);
+            margin-bottom: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 9px; /* Increased from 8px to move line 1px under display */
+            direction: ltr;
+        }
+
+        .audio-time-display {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(192, 132, 252, 0.5);
+        }
+
+        .audio-seek-bar {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            direction: ltr;
+        }
+
+        .audio-seek-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #C084FC;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(192, 132, 252, 0.8);
+            transition: transform 0.2s ease;
+        }
+
+        .audio-seek-bar::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .audio-seek-bar::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #C084FC;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(192, 132, 252, 0.8);
+        }
     </style>
 </head>
 
@@ -443,6 +501,10 @@
             <div class="audio-cover-img" id="audio-cover-img"></div>
 
             <div class="audio-controls-layer">
+                <div class="audio-progress-container">
+                    <div id="audio-time-display" class="audio-time-display">0:00 / 0:00</div>
+                    <input type="range" id="audio-seek-bar" class="audio-seek-bar" value="0" min="0" max="100">
+                </div>
                 <button id="audio-play-toggle" class="audio-play-toggle" aria-label="تشغيل / إيقاف">
                     <span class="audio-icon-shape" id="audio-icon-state"></span>
                 </button>
@@ -561,6 +623,21 @@
         const audioCoverImg = document.getElementById('audio-cover-img');
         const audioPlayToggle = document.getElementById('audio-play-toggle');
         const audioElement = document.getElementById('story-audio-element');
+        const seekSlider = document.getElementById('audio-seek-bar');
+        const timeDisplay = document.getElementById('audio-time-display');
+
+        function formatTime(secs) {
+            if (isNaN(secs)) return '0:00';
+            const m = Math.floor(secs / 60);
+            const s = Math.floor(secs % 60);
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        function updateDisplay() {
+            const cur = audioElement.currentTime;
+            const dur = audioElement.duration || 0;
+            timeDisplay.textContent = `${formatTime(cur)} / ${formatTime(dur)}`;
+        }
 
         function openAudioModal(story) {
 
@@ -580,6 +657,10 @@
 
             audioModal.classList.add('active');
             audioPlayToggle.classList.remove('playing');
+
+            // Reset progress
+            seekSlider.value = 0;
+            timeDisplay.textContent = '0:00 / 0:00';
         }
 
         audioCloseBtn.addEventListener('click', () => {
@@ -598,6 +679,41 @@
             } else {
                 audioElement.pause();
                 audioPlayToggle.classList.remove('playing');
+            }
+        });
+
+        // Time updates
+        audioElement.addEventListener('timeupdate', () => {
+            const cur = audioElement.currentTime;
+            const dur = audioElement.duration;
+            if (dur && !isDragging) {
+                const perc = (cur / dur) * 100;
+                seekSlider.value = perc;
+            }
+            updateDisplay();
+        });
+
+        audioElement.addEventListener('loadedmetadata', () => {
+            updateDisplay();
+        });
+
+        // Seeking logic
+        let isDragging = false;
+        seekSlider.addEventListener('input', () => {
+            isDragging = true;
+            const dur = audioElement.duration;
+            if (dur) {
+                const curTime = (seekSlider.value / 100) * dur;
+                timeDisplay.textContent = `${formatTime(curTime)} / ${formatTime(dur)}`;
+            }
+        });
+
+        seekSlider.addEventListener('change', () => {
+            isDragging = false;
+            const dur = audioElement.duration;
+            if (dur) {
+                const seekTo = (seekSlider.value / 100) * dur;
+                audioElement.currentTime = seekTo;
             }
         });
 
