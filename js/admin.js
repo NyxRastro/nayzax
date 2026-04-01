@@ -630,8 +630,11 @@ async function loadOpinions() {
 }
 
 function viewOpinion(id) {
-    const o = _allOpinions.find(x => x.id === id);
-    if (!o) return;
+    const o = _allOpinions.find(x => String(x.id) === String(id));
+    if (!o) {
+        console.error('Opinion not found for ID:', id);
+        return;
+    }
     document.getElementById('opinion-modal-name').textContent = o.name || 'زائر مجهول';
     document.getElementById('opinion-modal-date').textContent = o.created_at ? new Date(o.created_at).toLocaleString('ar-EG') : '—';
     document.getElementById('opinion-modal-message').textContent = o.message;
